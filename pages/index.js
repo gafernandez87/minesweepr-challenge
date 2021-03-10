@@ -1,7 +1,17 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import styles from '../styles/Home.module.css';
+
+import { loginWithGithub } from '../firebase_client/index';
+
+import { useEffect } from 'react';
 
 export default function Home() {
+
+  useEffect(() => {
+    loginWithGithub()
+    .then(console.log)
+  }, [])
+
   return (
     <div className={styles.container}>
       <Head>
