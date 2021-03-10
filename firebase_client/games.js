@@ -1,7 +1,7 @@
-import { db } from './index';
-import { mapSnapshotToData } from '../utils/utils';
+import { db } from './index'
+import { mapSnapshotToData } from '../utils/utils'
 
-const gamesRef = db.collection("games");
+const gamesRef = db.collection('games')
 
 export const getAllGames = () => {
     return gamesRef.get().then(mapSnapshotToData)
@@ -9,6 +9,6 @@ export const getAllGames = () => {
 
 export const getGamesByStatus = (status) => {
     return gamesRef.where('status', '==', status)
-    .get()
-    .then(mapSnapshotToData);
-};
+        .get()
+        .then(mapSnapshotToData)
+}
