@@ -1,4 +1,4 @@
-import * as firebase from 'firebase'
+import * as firebase from 'firebase';
 
 const config = {
     apiKey: 'AIzaSyBCRh5k9SSl9TLh1nUE48Zn-mv5aWfpxaY',
@@ -7,24 +7,24 @@ const config = {
     storageBucket: 'minesweeper-challenge.appspot.com',
     messagingSenderId: '766590585091',
     appId: '1:766590585091:web:09905b1a07995f864d4136'
-}
+};
 
-!firebase.apps.length && firebase.initializeApp(config)
+!firebase.apps.length && firebase.initializeApp(config);
 
-export const db = firebase.firestore()
+export const db = firebase.firestore();
 
 export const signin = (email, password) => {
-    return firebase.auth().signInWithEmailAndPassword(email, password)
-}
+    return firebase.auth().signInWithEmailAndPassword(email, password);
+};
 
 export const signup = (email, password) => {
     firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((user) => {
-            console.log(user)
+            console.log(user);
         })
         .catch((error) => {
-            const errorCode = error.code
-            const errorMessage = error.message
-            console.error(`${errorCode} - ${errorMessage}`)
-        })
-}
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error(`${errorCode} - ${errorMessage}`);
+        });
+};
