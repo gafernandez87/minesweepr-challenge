@@ -9,7 +9,6 @@ export default async (req, res) => {
         let newUser = null;
         try {
             newUser = await signup(email, password);
-            console.log('(newUser', newUser);
         } catch (error) {
             res.status(500).json({ error: 'The email address is already in use by another account' });
             return;

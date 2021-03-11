@@ -14,7 +14,17 @@ const config = {
 export const db = firebase.firestore();
 
 export const signin = (email, password) => {
-    return firebase.auth().signInWithEmailAndPassword(email, password);
+    return firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((data) => {
+            return {
+                sessionId: data.user.uid,
+                email
+            };
+        })
+        .catch(err => {
+            console.log('ERROR 1');
+            throw err;
+        });
 };
 
 export const signup = (email, password) => {

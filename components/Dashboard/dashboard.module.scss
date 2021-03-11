@@ -1,0 +1,33 @@
+.gamesContainer {
+    padding: 2%;
+    display: flex;
+    flex-flow: wrap row;
+
+    .gameThumbnailContainer {
+        width: 300px;
+        height: 300px;
+        border: 1px solid black;
+        margin-right: 5%;
+    }
+    .newGameThumbnailContainer {
+        width: 300px;
+        height: 300px;
+        cursor: pointer;
+        font-size: 50px;
+        margin-right: 5%;
+        font-weight: bold;
+        text-align: center;
+        line-height: 300px;
+        vertical-align: middle;
+        border: 1px solid black;
+    }
+}
+
+.gameList {
+    width: 100%;
+    padding: 30px;;
+    display: flex;
+    flex-flow: wrap row;
+    justify-content: flex-start;
+}
+

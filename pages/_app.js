@@ -2,6 +2,7 @@ import 'styles/globals.css';
 import React, { useEffect, useReducer } from 'react';
 import { useRouter } from 'next/router';
 import { SessionContext } from 'contexts/SessionContext';
+import Header from 'components/Commons/Header';
 import App from 'next/app';
 
 function sessionReducer (state, action) {
@@ -26,8 +27,20 @@ const loadPlayerBySessionId = sessionId => {
         .then(res => res.json());
 };
 
-function goingToLoginOrSignup (router) {
+function isSigninSignUp (router) {
     return router.route === '/login' || router.route === '/signup';
+}
+
+function handleRedirect (player, router, sessionId) {
+    if (player && isSigninSignUp(router)) {
+        console.log('redirecting to dashboard');
+        router.push('/dashboard');
+    }
+
+    if (!sessionId && !isSigninSignUp(router)) {
+        console.log('redirecting to login');
+        router.push('/login');
+    }
 }
 
 function MyApp ({ Component, pageProps, sessionId }) {
@@ -35,14 +48,10 @@ function MyApp ({ Component, pageProps, sessionId }) {
     const router = useRouter();
 
     useEffect(() => {
-        console.log({ sessionId, player: state.player });
-        if (state.player && goingToLoginOrSignup(router)) {
-            router.push('/dashboard');
-        }
+        handleRedirect(state.player, router, sessionId);
 
-        if (!sessionId && !goingToLoginOrSignup(router)) {
-            router.push('/login');
-        } else if (!state.player) {
+        if (!state.player && sessionId) {
+            console.log('fetching player');
             loadPlayerBySessionId(sessionId).then(player => {
                 dispatch({
                     type: 'SET_PLAYER',
@@ -52,8 +61,11 @@ function MyApp ({ Component, pageProps, sessionId }) {
         }
     }, [state]);
 
+    const showHeader = !isSigninSignUp(router);
+
     return (
         <SessionContext.Provider value={[state, dispatch]}>
+            {showHeader && <Header state={state} />}
             <Component {...pageProps} />
         </SessionContext.Provider>
     );
@@ -68,6 +80,7 @@ MyApp.getInitialProps = async (appContext) => {
 
     const appProps = await App.getInitialProps(appContext);
 
+    console.log(appProps);
     return { ...appProps, sessionId };
 };
 

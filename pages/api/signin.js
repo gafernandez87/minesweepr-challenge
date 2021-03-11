@@ -7,7 +7,7 @@ export default async (req, res) => {
         const { email, password } = body;
         signin(email, password)
             .then(player => {
-                res.setHeader('Set-Cookie', `minesweeper_session_id=${player.user.uid}; path=/`);
+                res.setHeader('Set-Cookie', `minesweeper_session_id=${player.sessionId}; path=/`);
                 res.status(200).json(player);
             })
             .catch(error => {
