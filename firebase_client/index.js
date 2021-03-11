@@ -18,13 +18,15 @@ export const signin = (email, password) => {
 };
 
 export const signup = (email, password) => {
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((user) => {
-            console.log(user);
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((data) => {
+            return {
+                sessionId: data.user.uid,
+                email
+            };
         })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error(`${errorCode} - ${errorMessage}`);
+        .catch(err => {
+            console.log('ERROR 1');
+            throw err;
         });
 };

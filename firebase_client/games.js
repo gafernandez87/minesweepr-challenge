@@ -12,3 +12,10 @@ export const getGamesByStatus = (status) => {
         .get()
         .then(mapSnapshotToData);
 };
+
+export const getGamesBySessionId = (sessionId) => {
+    return gamesRef.where('session_id', '==', sessionId)
+        .get()
+        .then(mapSnapshotToData);
+}
+;

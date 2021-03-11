@@ -1,4 +1,4 @@
-import { signin } from '../../firebase_client';
+import { signin } from 'firebase_client';
 
 export default async (req, res) => {
     const { method, body } = req;
@@ -6,15 +6,15 @@ export default async (req, res) => {
     if (method === 'POST') {
         const { email, password } = body;
         signin(email, password)
-            .then(user => {
-                res.setHeader('Set-Cookie', `minesweeper_session_id=${user.user.uid}`);
-                res.status(200).json(user);
+            .then(player => {
+                res.setHeader('Set-Cookie', `minesweeper_session_id=${player.user.uid}; path=/`);
+                res.status(200).json(player);
             })
             .catch(error => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.error(`${errorCode} - ${errorMessage}`);
-                res.status(500).json('User not found');
+                res.status(500).json('Player not found');
             });
     } else {
         res.status(405).json('METHOD NOT ALLOWED');

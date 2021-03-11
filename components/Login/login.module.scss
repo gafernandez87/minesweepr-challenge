@@ -1,0 +1,29 @@
+.loginContainer {
+    width: 400px;
+    height: 400px;
+    padding: 30px;
+    display: flex;
+    flex-flow: wrap column;
+    justify-content: space-between;
+    border: 1px solid black;
+    
+    .emailLogin{
+        height: 60%;
+        display: flex;
+        font-size: 15px;
+        font-weight: bold;
+        flex-flow: wrap column;
+        justify-content: space-between;
+    }
+
+    .divider {
+        height: 2px;
+        width: 100%;
+        border: 1px dashed black;
+    }
+
+    .signUp {
+        text-align: right;
+        font-size: 13px;
+    }
+}

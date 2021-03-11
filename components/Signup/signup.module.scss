@@ -1,0 +1,23 @@
+.signupContainer {
+    width: 400px;
+    height: 400px;
+    padding: 30px;
+    display: flex;
+    flex-flow: wrap column;
+    border: 1px solid black;
+    
+    .signupForm {
+        height: 60%;
+        display: flex;
+        font-size: 15px;
+        margin-top: 10%;
+        font-weight: bold;
+        flex-flow: wrap column;
+        justify-content: space-between;
+    }
+
+    .login {
+        text-align: right;
+        font-size: 13px;
+    }
+}
