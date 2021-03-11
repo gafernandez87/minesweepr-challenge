@@ -15,7 +15,7 @@ a {
   box-sizing: border-box;
 }
 
-input {
+input, select {
   height: 35px;
   border-radius: 5px;
   border: 1px solid black;

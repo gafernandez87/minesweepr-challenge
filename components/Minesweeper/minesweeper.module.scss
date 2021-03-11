@@ -1,0 +1,68 @@
+.gameArea{
+    width: 100%;
+    padding: 2%;
+    display: flex;
+    flex-flow: wrap row;
+    justify-content: flex-start;
+}
+.setup {
+    width: 30%;
+    display: flex;
+    font-size: 18px;
+    margin-right: 10%;
+    flex-flow: wrap column;
+    & > * {
+        margin-bottom: 10%;
+    }
+    .difficulty {
+        display: flex;
+        flex-flow: wrap column;
+    }
+    .customGame {
+        display: flex;
+        flex-flow: wrap row;
+        padding: 2%;
+        input {
+            width: 30%;
+        }
+        div {
+            width: 100%;
+            display: flex;
+            flex-flow: wrap row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2%;
+        }
+    }
+}
+
+.minesweeper {
+    width: 60%;
+    display: flex;
+    flex-flow: wrap row;
+}
+
+.cell {
+    height: 60px;
+    width: 60px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid black;
+    &.covered {
+        cursor: pointer;
+    }
+    
+    &.uncovered {
+        color: white;
+        font-size: 25px;
+        line-height: 55px;
+        background-color: gray;
+    }
+}
+
+
+.icon {
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+}

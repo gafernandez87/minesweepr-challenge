@@ -1,3 +1,11 @@
+.gameList {
+    width: 100%;
+    padding: 30px;;
+    display: flex;
+    flex-flow: wrap row;
+    justify-content: flex-start;
+}
+
 .gamesContainer {
     padding: 2%;
     display: flex;
@@ -22,12 +30,3 @@
         border: 1px solid black;
     }
 }
-
-.gameList {
-    width: 100%;
-    padding: 30px;;
-    display: flex;
-    flex-flow: wrap row;
-    justify-content: flex-start;
-}
-
