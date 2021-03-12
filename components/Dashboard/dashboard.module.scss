@@ -14,8 +14,14 @@
     .gameThumbnailContainer {
         width: 300px;
         height: 300px;
-        border: 1px solid black;
+        display: flex;
+        padding: 20px;
         margin-right: 5%;
+        text-align: center;
+        margin-bottom: 20px;
+        flex-flow: wrap column;
+        border: 1px solid black;
+        justify-content: space-around;
     }
     .newGameThumbnailContainer {
         width: 300px;
@@ -25,8 +31,27 @@
         margin-right: 5%;
         font-weight: bold;
         text-align: center;
+        margin-bottom: 20px;
         line-height: 300px;
         vertical-align: middle;
         border: 1px solid black;
+    }
+}
+
+.miniGame {
+    display: flex;
+    flex-flow: wrap row;
+    margin: 0 auto;
+    border: 1px solid black;
+    div {
+        height: 20px;
+        width: 20px;
+        font-size: 10px !important;
+        line-height: 20px !important;
+        img {
+            width: 15px;
+            height: 15px;
+            margin-top: 2px;
+        }
     }
 }

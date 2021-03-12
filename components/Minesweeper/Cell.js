@@ -1,5 +1,5 @@
 import styles from './minesweeper.module.scss';
-import { CELL_STATUS } from 'components/Minesweeper/utils';
+import { CELL_STATUS } from 'utils/utils';
 
 const getCellContent = (status, hasMine, bombsAround) => {
     let content = '';

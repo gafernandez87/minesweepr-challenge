@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { SessionContext } from 'contexts/SessionContext';
 
 import styles from './login.module.scss';
+import { TYPES } from 'reducers/SessionReducer';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('gastonf87@gmail.com');
+    const [password, setPassword] = useState('test1234');
     const [_, dispatch] = useContext(SessionContext);
 
     const handleEmailLogin = () => {
@@ -24,7 +25,7 @@ const Login = () => {
             .then(res => res.json())
             .then(player => {
                 dispatch({
-                    type: 'SET_PLAYER',
+                    type: TYPES.SET_PLAYER,
                     payload: player
                 });
             });

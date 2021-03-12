@@ -1,17 +1,8 @@
+// Components
 import Cell from 'components/Minesweeper/Cell';
 
-export const CELL_SIZE = 60;
-export const BOARD_DEFAULT_SIZE = 4;
-export const CELL_STATUS = {
-    COVERED: 'c',
-    UNCOVERED: 'u',
-    FLAGGED: 'f'
-};
-
-export const BOMB_STATUS = {
-    ACTIVE: 't',
-    INACTIVE: 'f'
-};
+// Utils
+import { BOMB_STATUS, CELL_STATUS, CELL_SIZE } from 'utils/utils';
 
 export const generateCode = (n, m, bombs) => {
     let code = '';

@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const NewGame = () => {
     return (
-        <Link href='/newGame'>
+        <Link href='/games'>
             <a className={styles.newGameThumbnailContainer}>+</a>
         </Link>
     );

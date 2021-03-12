@@ -1,20 +1,26 @@
+// Utils
+import { getBoardSize, drawBoard, mapCodeToObject, getUpdatedCode } from 'components/Minesweeper/utils';
+import { GAME_STATUS, CELL_STATUS } from 'utils/utils';
+
+// Styles
 import styles from './minesweeper.module.scss';
 
-import { getBoardSize, drawBoard, mapCodeToObject, getUpdatedCode, CELL_STATUS } from 'components/Minesweeper/utils';
-
 const GameBoard = ({ game, setGame }) => {
-    const { n, m, bombs, code, bombsObj } = game;
+    const { n, m, bombs, code } = game;
     const boardSize = getBoardSize(n, m);
+
     const handleCellClick = (coord, hasMine, isRightClick) => {
+        const bombsObj = game.bombsObj || mapCodeToObject(game.code);
         const updatedCode = getUpdatedCode(code, coord, bombsObj, hasMine, isRightClick);
         const updatedBombsObj = mapCodeToObject(updatedCode);
-        const uncovered = Object.values(updatedBombsObj).filter(s => s.status === CELL_STATUS.FLAGGED || s.status === CELL_STATUS.COVERED).length;
+        const uncovered = Object.values(updatedBombsObj)
+            .filter(s => s.status === CELL_STATUS.FLAGGED || s.status === CELL_STATUS.COVERED).length;
 
-        let gameStatus;
+        let gameStatus = game.status;
         if (uncovered === bombs && !hasMine) {
-            gameStatus = 'win';
+            gameStatus = GAME_STATUS.WIN;
         } else if (!isRightClick && hasMine) {
-            gameStatus = 'lose';
+            gameStatus = GAME_STATUS.GAME_OVER;
         }
 
         setGame({

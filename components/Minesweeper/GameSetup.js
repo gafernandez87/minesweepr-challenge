@@ -1,29 +1,20 @@
+// Hooks
 import { useState } from 'react';
+
+// Utils
+import { initialGameConfig, DIFFICULTY, GAME_STATUS } from 'utils/utils';
+
+// Styles
 import styles from './minesweeper.module.scss';
-import { BOARD_DEFAULT_SIZE } from 'components/Minesweeper/utils';
 
-const DIFFICULTY = {
-    EASY: 'easy',
-    NORMAL: 'normal',
-    HARD: 'hard',
-    CUSTOM: 'custom'
-};
-
-const initialConfig = {
-    n: BOARD_DEFAULT_SIZE,
-    m: BOARD_DEFAULT_SIZE,
-    bombs: 1,
-    difficulty: DIFFICULTY.EASY
-};
-
-const GameSetup = ({ startGame }) => {
-    const [gameConfig, setGameConfig] = useState(initialConfig);
-    const [difficulty, setDifficulty] = useState(initialConfig.difficulty);
+const GameSetup = ({ startGame, saveGame, gameStatus }) => {
+    const [gameConfig, setGameConfig] = useState(initialGameConfig);
+    const [difficulty, setDifficulty] = useState(initialGameConfig.difficulty);
 
     const changeDifficulty = (e) => {
         const currentDifficulty = e.target.value;
         if (currentDifficulty === DIFFICULTY.EASY) {
-            setGameConfig(initialConfig);
+            setGameConfig(initialGameConfig);
         } else if (currentDifficulty === DIFFICULTY.NORMAL) {
             setGameConfig({
                 n: 5,
@@ -55,7 +46,6 @@ const GameSetup = ({ startGame }) => {
             </div>
             {difficulty === DIFFICULTY.CUSTOM && (
                 <div className={styles.customGame}>
-                    <label>Board Dimension</label>
                     <div>
                         <label>Height</label>
                         <input type="text" value={gameConfig.n} placeholder="N" onChange={e => setGameConfig({ ...gameConfig, n: e.target.value })}/>
@@ -71,7 +61,8 @@ const GameSetup = ({ startGame }) => {
                 </div>
             )}
 
-            <button onClick={() => startGame(gameConfig)}>Play!</button>
+            <button onClick={() => startGame(gameConfig)}>Start new game!</button>
+            {gameStatus && gameStatus === GAME_STATUS.PLAYING && <button onClick={saveGame}>Save</button>}
         </div>
     );
 };

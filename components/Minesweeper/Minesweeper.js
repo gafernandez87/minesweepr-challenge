@@ -5,38 +5,109 @@ import GameSetup from './GameSetup';
 import GameBoard from './GameBoard';
 
 // Hooks
-import { useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+
+// Context
+import { SessionContext } from 'contexts/SessionContext';
 
 // Styles
 import styles from './minesweeper.module.scss';
+import { GAME_STATUS } from 'utils/utils';
+import { TYPES } from 'reducers/SessionReducer';
 
-const Minesweeper = () => {
-    const [game, setGame] = useState({});
+const Minesweeper = ({ initialGame }) => {
+    const [game, setGame] = useState(initialGame);
+    const [notification, setNotification] = useState({});
+    const [sessionState, dispatch] = useContext(SessionContext);
+
+    useEffect(() => {
+        checkGameStatus();
+        if (!game?.code && sessionState.game) {
+            setGame(sessionState.game);
+        }
+    }, [game, sessionState]);
+
+    const checkGameStatus = () => {
+        if (game) {
+            if (game.status && game.status === GAME_STATUS.WIN) {
+                showNotification('YOU WIN!', NOTIFICATION_TYPE.SUCCESS);
+            } else if (game.status && game.status === GAME_STATUS.GAME_OVER) {
+                showNotification('GAME OVER!', NOTIFICATION_TYPE.ERROR);
+            }
+        }
+    };
 
     const startGame = (gameConfig) => {
-        const { n, m, bombs } = gameConfig;
-        const code = generateCode(n, m, bombs);
-        const bombsObj = mapCodeToObject(code);
+        delete gameConfig.bombsObj;
         setGame({
-            n,
-            m,
-            bombs,
-            code,
-            bombsObj
+            ...gameConfig,
+            status: GAME_STATUS.PLAYING
         });
+        setNotification({});
+    };
+
+    const createGame = (gameConfig) => {
+        const playerId = sessionState.player.sessionId;
+        const { n, m, bombs } = gameConfig;
+
+        const code = generateCode(n, m, bombs);
+        gameConfig.code = code;
+
+        fetch(`/api/players/${playerId}/games`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(gameConfig)
+        })
+            .then(res => res.json())
+            .then(newGame => {
+                dispatch({
+                    type: TYPES.SET_GAME,
+                    payload: newGame
+                });
+                const bombsObj = mapCodeToObject(code);
+                gameConfig.bombsObj = bombsObj;
+                startGame(gameConfig);
+            })
+            .catch(err => {
+                console.error(err);
+                showNotification('There was an error trying to start the game, try again!', NOTIFICATION_TYPE.ERROR);
+            });
+    };
+
+    const saveGame = () => {
+        const playerId = sessionState.player.sessionId;
+        const gameId = sessionState.game.id;
+        fetch(`/api/players/${playerId}/games/${gameId}`, {
+            method: 'PATCH',
+            body: game.code
+        })
+            .then(_ => showNotification('Game saved', NOTIFICATION_TYPE.SUCCESS, 3000))
+            .catch(err => {
+                console.error(err);
+                showNotification('Game save failed, try again!', NOTIFICATION_TYPE.ERROR);
+            });
+    };
+
+    const showNotification = (message, type, hide) => {
+        setNotification({
+            message,
+            type
+        });
+        if (hide) {
+            setTimeout(() => showNotification(null), hide);
+        }
     };
 
     return (
         <section className={styles.gameArea}>
-            {game.status &&
-                <Notification
-                    message={`You ${game.status}!`}
-                    type={game.status === 'win' ? NOTIFICATION_TYPE.SUCCESS : NOTIFICATION_TYPE.ERROR}
-                />
+            {notification.message &&
+                <Notification message={notification.message} type={notification.type} />
             }
 
-            <GameSetup startGame={startGame} />
-            {game.code && <GameBoard game={game} setGame={setGame} />}
+            <GameSetup startGame={createGame} saveGame={saveGame} gameStatus={game?.status} />
+            {game?.code && <GameBoard game={game} setGame={setGame} />}
 
         </section>
     );

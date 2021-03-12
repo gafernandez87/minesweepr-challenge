@@ -1,16 +1,16 @@
 import { db } from './index';
-import { mapSnapshotToData } from '../utils/utils';
+import { mapSnapshotToData, OPERATORS, COLLECTIONS } from 'firebase_client/utils/utils';
 
-const playerRef = db.collection('players');
+const playerRef = db.collection(COLLECTIONS.PLAYERS);
 
 export const getAllPlayers = () => {
     return playerRef.get().then(mapSnapshotToData);
 };
 
 export const getPlayerBySessionId = (sessionId) => {
-    return playerRef.where('sessionId', '==', sessionId)
+    return playerRef.where('sessionId', OPERATORS.EQUALS, sessionId)
         .get().then(snapshot => {
-            const players = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const players = mapSnapshotToData(snapshot);
             return players[0];
         });
 };

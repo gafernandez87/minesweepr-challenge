@@ -1,63 +1,39 @@
-import 'styles/globals.css';
-import React, { useEffect, useReducer } from 'react';
-import { useRouter } from 'next/router';
-import { SessionContext } from 'contexts/SessionContext';
+// Components
 import Header from 'components/Commons/Header';
-import App from 'next/app';
 
-function sessionReducer (state, action) {
-    switch (action.type) {
-    case 'SET_PLAYER': {
-        return {
-            ...state,
-            player: action.payload
-        };
-    }
-    default:
-        return state;
-    }
-}
+// Hooks
+import { useEffect, useReducer } from 'react';
+import { useRouter } from 'next/router';
 
-const initialState = {
-    player: null
-};
+// Context
+import { SessionContext } from 'contexts/SessionContext';
 
-const loadPlayerBySessionId = sessionId => {
-    return fetch(`/api/players/${sessionId}`)
-        .then(res => res.json());
-};
+// Reducer
+import { sessionReducer, TYPES, initialState } from 'reducers/SessionReducer';
 
-function isSigninSignUp (router) {
-    return router.route === '/login' || router.route === '/signup';
-}
+// Utils
+import { handleRedirect, loadPlayerBySessionId, isSigninSignUp, loadGameById } from 'utils/utils';
+import cookie from 'js-cookie';
 
-function handleRedirect (player, router, sessionId) {
-    if (player && isSigninSignUp(router)) {
-        console.log('redirecting to dashboard');
-        router.push('/dashboard');
-    }
+// styles
+import 'styles/globals.css';
 
-    if (!sessionId && !isSigninSignUp(router)) {
-        console.log('redirecting to login');
-        router.push('/login');
-    }
-}
-
-function MyApp ({ Component, pageProps, sessionId }) {
+function MyApp ({ Component, pageProps }) {
     const [state, dispatch] = useReducer(sessionReducer, initialState);
     const router = useRouter();
+    const sessionId = cookie.get('minesweeper_session_id');
 
     useEffect(() => {
-        handleRedirect(state.player, router, sessionId);
-
-        if (!state.player && sessionId) {
-            console.log('fetching player');
-            loadPlayerBySessionId(sessionId).then(player => {
-                dispatch({
-                    type: 'SET_PLAYER',
-                    payload: player
+        const redirected = handleRedirect(router, sessionId);
+        if (!redirected) {
+            if (sessionId && !state.player) {
+                loadPlayerBySessionId(sessionId).then(player => {
+                    dispatch({
+                        type: TYPES.SET_PLAYER,
+                        payload: player
+                    });
                 });
-            });
+            }
         }
     }, [state]);
 
@@ -70,18 +46,5 @@ function MyApp ({ Component, pageProps, sessionId }) {
         </SessionContext.Provider>
     );
 }
-
-MyApp.getInitialProps = async (appContext) => {
-    const { ctx } = appContext;
-    const { req } = ctx;
-    const cookies = req?.headers?.cookie?.split('; ') || [];
-    const session = cookies.find(cookie => cookie.indexOf('minesweeper_session_id') === 0);
-    const sessionId = session?.split('=')[1] || null;
-
-    const appProps = await App.getInitialProps(appContext);
-
-    console.log(appProps);
-    return { ...appProps, sessionId };
-};
 
 export default MyApp;
