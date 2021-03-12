@@ -27,7 +27,7 @@ export const generateCode = (n, m, bombs) => {
                     mine = BOMB_STATUS.INACTIVE;
                 }
             }
-            code += `${i}-${j}|${CELL_STATUS.UNCOVERED}|${mine}_`;
+            code += `${i}-${j}|${CELL_STATUS.COVERED}|${mine}_`;
         }
     }
 
@@ -77,8 +77,8 @@ export const drawBoard = (code, handleCellClick) => {
     });
 };
 
-export const countBombsAround = (code, coord) => {
-    const bombsObj = mapCodeToObject(code);
+export const countBombsAround = (code, coord, newBombsObj) => {
+    const bombsObj = newBombsObj || mapCodeToObject(code);
 
     let bombs = 0;
     const x = parseInt(coord.split('-')[0]);
@@ -103,4 +103,46 @@ export const getBoardSize = (n, m) => {
         width: boardWidth,
         height: boardHeight
     };
+};
+
+export const getUpdatedCode = (code, coord, bombsObj, hasMine, isRightClick) => {
+    const currentStatus = bombsObj[`${coord}`]?.status;
+    if (!currentStatus) return code;
+    let newStatus = '';
+
+    if (isRightClick) {
+        if (currentStatus === CELL_STATUS.FLAGGED) {
+            newStatus = CELL_STATUS.COVERED;
+        } else if (currentStatus === CELL_STATUS.COVERED) {
+            newStatus = CELL_STATUS.FLAGGED;
+        }
+    } else {
+        if (currentStatus === CELL_STATUS.COVERED) {
+            newStatus = CELL_STATUS.UNCOVERED;
+        }
+    }
+
+    if (newStatus) {
+        let newCode = code.replace(`${coord}|${currentStatus}`, `${coord}|${newStatus}`);
+
+        if (isRightClick) return newCode;
+
+        const newBombsObj = mapCodeToObject(newCode);
+        const bombsAround = countBombsAround(code, coord, newBombsObj);
+
+        if (bombsAround === 0 && !hasMine) {
+            const x = parseInt(coord.split('-')[0]);
+            const y = parseInt(coord.split('-')[1]);
+            newCode = getUpdatedCode(newCode, `${(x - 1)}-${y}`, newBombsObj, false, isRightClick);
+            newCode = getUpdatedCode(newCode, `${(x - 1)}-${(y - 1)}`, newBombsObj, false, isRightClick);
+            newCode = getUpdatedCode(newCode, `${x}-${(y - 1)}`, newBombsObj, false, isRightClick);
+            newCode = getUpdatedCode(newCode, `${(x + 1)}-${y}`, newBombsObj, false, isRightClick);
+            newCode = getUpdatedCode(newCode, `${(x + 1)}-${(y + 1)}`, newBombsObj, false, isRightClick);
+            newCode = getUpdatedCode(newCode, `${x}-${(y + 1)}`, newBombsObj, false, isRightClick);
+            return newCode;
+        } else {
+            return newCode;
+        }
+    }
+    return code;
 };

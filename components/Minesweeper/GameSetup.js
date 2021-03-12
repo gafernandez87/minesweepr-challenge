@@ -9,30 +9,35 @@ const DIFFICULTY = {
     CUSTOM: 'custom'
 };
 
-const GameSetup = ({ startGame }) => {
-    const [n, setN] = useState(BOARD_DEFAULT_SIZE);
-    const [m, setM] = useState(BOARD_DEFAULT_SIZE);
-    const [bombs, setBombs] = useState(3);
-    const [difficulty, setDifficulty] = useState(DIFFICULTY.EASY);
+const initialConfig = {
+    n: BOARD_DEFAULT_SIZE,
+    m: BOARD_DEFAULT_SIZE,
+    bombs: 1,
+    difficulty: DIFFICULTY.EASY
+};
 
-    const handlePlay = () => {
-        startGame(n, m, bombs);
-    };
+const GameSetup = ({ startGame }) => {
+    const [gameConfig, setGameConfig] = useState(initialConfig);
+    const [difficulty, setDifficulty] = useState(initialConfig.difficulty);
 
     const changeDifficulty = (e) => {
         const currentDifficulty = e.target.value;
         if (currentDifficulty === DIFFICULTY.EASY) {
-            setN(DIFFICULTY.EASY);
-            setM(DIFFICULTY.EASY);
-            setBombs(3);
+            setGameConfig(initialConfig);
         } else if (currentDifficulty === DIFFICULTY.NORMAL) {
-            setN(5);
-            setM(5);
-            setBombs(7);
+            setGameConfig({
+                n: 5,
+                m: 5,
+                bombs: 7,
+                difficulty: DIFFICULTY.NORMAL
+            });
         } else if (currentDifficulty === DIFFICULTY.HARD) {
-            setN(8);
-            setM(8);
-            setBombs(20);
+            setGameConfig({
+                n: 8,
+                m: 8,
+                bombs: 20,
+                difficulty: DIFFICULTY.HARD
+            });
         }
         setDifficulty(currentDifficulty);
     };
@@ -53,20 +58,20 @@ const GameSetup = ({ startGame }) => {
                     <label>Board Dimension</label>
                     <div>
                         <label>Height</label>
-                        <input type="text" value={n} placeholder="N" onChange={e => setN(e.target.value)}/>
+                        <input type="text" value={gameConfig.n} placeholder="N" onChange={e => setGameConfig({ ...gameConfig, n: e.target.value })}/>
                     </div>
                     <div>
                         <label>Width</label>
-                        <input type="text" value={m} placeholder="M" onChange={e => setM(e.target.value)}/>
+                        <input type="text" value={gameConfig.m} placeholder="M" onChange={e => setGameConfig({ ...gameConfig, m: e.target.value })}/>
                     </div>
                     <div>
                         <label>Bombs</label>
-                        <input type="text" value={bombs} placeholder="5" onChange={e => setBombs(e.target.value)}/>
+                        <input type="text" value={gameConfig.bombs} placeholder="5" onChange={e => setGameConfig({ ...gameConfig, bombs: e.target.value })}/>
                     </div>
                 </div>
             )}
 
-            <button onClick={handlePlay}>Play!</button>
+            <button onClick={() => startGame(gameConfig)}>Play!</button>
         </div>
     );
 };

@@ -1,0 +1,25 @@
+.notification {
+    top: 30px;
+    right: 48%;
+    padding: 15px;
+    font-size: 40px;
+    position: absolute;
+    border-radius: 5px;
+
+    &.success {
+        color: #5a821d;
+        border: 1px solid #5a821d;
+        background-color: #2ad62a;
+    }
+    &.warn {
+        color: black;
+        border: 1px solid black;
+        background-color: #ffff3f;
+    }
+    &.error {
+        color: #ffffff;
+        background-color: #ec1d1d;
+        border: 1px solid darkred;
+    }
+}
+

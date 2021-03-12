@@ -1,43 +1,30 @@
 import styles from './minesweeper.module.scss';
 
-import { getBoardSize, drawBoard, mapCodeToObject, CELL_STATUS } from 'components/Minesweeper/utils';
+import { getBoardSize, drawBoard, mapCodeToObject, getUpdatedCode, CELL_STATUS } from 'components/Minesweeper/utils';
 
 const GameBoard = ({ game, setGame }) => {
     const { n, m, bombs, code, bombsObj } = game;
-
+    const boardSize = getBoardSize(n, m);
     const handleCellClick = (coord, hasMine, isRightClick) => {
-        let newCode = '';
-        let newStatus = '';
-        const currentStatus = bombsObj[`${coord}`]?.status;
-        if (isRightClick) {
-            if (currentStatus === CELL_STATUS.FLAGGED) {
-                newStatus = CELL_STATUS.COVERED;
-            } else if (currentStatus === CELL_STATUS.COVERED) {
-                newStatus = CELL_STATUS.FLAGGED;
-            }
-        } else {
-            if (currentStatus === CELL_STATUS.COVERED) {
-                newStatus = CELL_STATUS.UNCOVERED;
-            }
+        const updatedCode = getUpdatedCode(code, coord, bombsObj, hasMine, isRightClick);
+        const updatedBombsObj = mapCodeToObject(updatedCode);
+        const uncovered = Object.values(updatedBombsObj).filter(s => s.status === CELL_STATUS.FLAGGED || s.status === CELL_STATUS.COVERED).length;
+
+        let gameStatus;
+        if (uncovered === bombs && !hasMine) {
+            gameStatus = 'win';
+        } else if (!isRightClick && hasMine) {
+            gameStatus = 'lose';
         }
 
-        if (newStatus) {
-            if (newStatus === CELL_STATUS.UNCOVERED && hasMine) {
-                console.log('GAME OVER');
-            }
-
-            newCode = code.replace(`${coord}|${currentStatus}`, `${coord}|${newStatus}`);
-
-            const newBombsObj = mapCodeToObject(newCode);
-            setGame({
-                ...game,
-                code: newCode,
-                bombsObj: newBombsObj
-            });
-        }
+        setGame({
+            ...game,
+            code: updatedCode,
+            bombsObj: updatedBombsObj,
+            status: gameStatus
+        });
     };
 
-    const boardSize = getBoardSize(n, m);
     return (
         <div style={{ width: boardSize.width, height: boardSize.height }} className={styles.minesweeper}>
             {drawBoard(code, handleCellClick)}
