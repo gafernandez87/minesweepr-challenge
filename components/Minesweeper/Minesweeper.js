@@ -16,52 +16,57 @@ import { GAME_STATUS } from 'utils/utils';
 import { TYPES } from 'reducers/SessionReducer';
 
 const Minesweeper = ({ gameId }) => {
-    const [game, setGame] = useState(null);
     const [notification, setNotification] = useState({});
     const [sessionState, dispatch] = useContext(SessionContext);
+    const [initialGameStatus, setI] = useState(null);
 
     useEffect(() => {
-        console.log('EFFECT');
         checkGameStatus();
-        if (!game?.code && sessionState.game) {
-            setGame(sessionState.game);
-        }
-        if (gameId) {
-            let flag = true;
-            if (sessionState?.player) {
-                const game = sessionState?.game || null;
-                if (game) {
-                    flag && setGame(game);
-                } else {
-                    const sessionId = sessionState?.player?.sessionId;
-                    if (sessionId !== 'anonymous') {
-                        fetch(`/api/players/${sessionId}/games/${gameId}`)
-                            .then(res => res.json())
-                            .then(data => {
-                                flag && setGame(data);
-                            });
-                    }
-                }
+
+        const sessionId = sessionState?.player?.sessionId;
+        let flag = true;
+        if (gameId && !sessionState.game) {
+            if (sessionId && sessionId !== 'anonymous') {
+                fetch(`/api/players/${sessionId}/games/${gameId}`)
+                    .then(res => flag && res.json())
+                    .then(newGame => {
+                        flag && dispatch({
+                            type: TYPES.SET_GAME,
+                            payload: newGame
+                        });
+                        flag && setI(newGame.status);
+                    });
             }
-            return () => (flag = false);
         }
-    }, [game, sessionState, gameId]);
+        return () => (flag = false);
+    }, [sessionState, gameId]);
 
     const checkGameStatus = () => {
-        if (game) {
-            if (game.status && game.status === GAME_STATUS.WIN) {
-                showNotification('YOU WIN!', NOTIFICATION_TYPE.SUCCESS);
-            } else if (game.status && game.status === GAME_STATUS.GAME_OVER) {
-                showNotification('GAME OVER!', NOTIFICATION_TYPE.ERROR);
-            }
+        const status = sessionState.game?.status;
+        // Only save if the game change from playing to another state
+        if (status && initialGameStatus &&
+            (status === GAME_STATUS.WIN || status === GAME_STATUS.GAME_OVER) &&
+            status !== initialGameStatus) {
+            saveGame(status)
+                .then(_ => {
+                    const message = status === GAME_STATUS.WIN ? 'YOU WIN!' : 'GAME OVER!';
+                    const type = status === GAME_STATUS.WIN ? NOTIFICATION_TYPE.SUCCESS : NOTIFICATION_TYPE.ERROR;
+                    showNotification(message, type);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
         }
     };
 
     const startGame = (gameConfig) => {
         delete gameConfig.bombsObj;
-        setGame({
-            ...gameConfig,
-            status: GAME_STATUS.PLAYING
+        dispatch({
+            type: TYPES.SET_GAME,
+            payload: {
+                ...gameConfig,
+                status: GAME_STATUS.PLAYING
+            }
         });
         setNotification({});
     };
@@ -102,14 +107,24 @@ const Minesweeper = ({ gameId }) => {
         }
     };
 
-    const saveGame = () => {
+    const saveGame = (status) => {
         const playerId = sessionState.player.sessionId;
         const gameId = sessionState.game.id;
-        fetch(`/api/players/${playerId}/games/${gameId}`, {
+        return fetch(`/api/players/${playerId}/games/${gameId}`, {
             method: 'PATCH',
-            body: game.code
-        })
-            .then(_ => showNotification('Game saved', NOTIFICATION_TYPE.SUCCESS, 3000))
+            body: JSON.stringify({
+                code: sessionState.game.code,
+                status
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    };
+
+    const handleSaveGame = () => {
+        saveGame()
+            .then(_ => showNotification('Game saved!', NOTIFICATION_TYPE.SUCCESS, 3000))
             .catch(err => {
                 console.error(err);
                 showNotification('Game save failed, try again!', NOTIFICATION_TYPE.ERROR);
@@ -134,11 +149,11 @@ const Minesweeper = ({ gameId }) => {
 
             <GameSetup
                 startGame={createGame}
-                saveGame={saveGame}
-                gameStatus={game?.status}
+                saveGame={handleSaveGame}
+                gameStatus={sessionState.game?.status}
                 isAnonymous={sessionState?.player?.sessionId === 'anonymous'}
             />
-            {game?.code && <GameBoard game={game} setGame={setGame} />}
+            {sessionState.game?.code && <GameBoard />}
 
         </section>
     );

@@ -22,7 +22,9 @@ export default async (req, res) => {
         };
     } else if (method === 'PATCH') {
         try {
-            const gameUpdated = await saveGame(gameId, body);
+            const { code, status } = body;
+            console.log({ code, status });
+            const gameUpdated = await saveGame(gameId, code, status);
             if (gameUpdated) {
                 res.status(200).send();
             } else {

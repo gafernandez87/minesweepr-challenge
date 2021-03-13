@@ -1,6 +1,7 @@
 export const TYPES = {
     SET_PLAYER: 'SET_PLAYER',
-    SET_GAME: 'SET_GAME'
+    SET_GAME: 'SET_GAME',
+    CLEAR_GAME: 'CLEAR_GAME'
 };
 
 export const initialState = {
@@ -15,6 +16,7 @@ export function sessionReducer (state, action) {
         return {
             ...state,
             player: {
+                ...state.player,
                 ...payload
             }
         };
@@ -22,7 +24,16 @@ export function sessionReducer (state, action) {
     case TYPES.SET_GAME: {
         return {
             ...state,
-            game: payload
+            game: {
+                ...state.game,
+                ...payload
+            }
+        };
+    }
+    case TYPES.CLEAR_GAME: {
+        return {
+            ...state,
+            game: null
         };
     }
     default:

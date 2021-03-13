@@ -1,5 +1,4 @@
 export const mapSnapshotToData = (snapshot) => {
-    console.log(snapshot.docs);
     return snapshot.docs.map(snap => {
         return {
             id: snap.id,

@@ -50,7 +50,7 @@ function MyApp ({ Component, pageProps }) {
         }
     }, [state]);
 
-    const showHeader = !isSigninSignUp(router);
+    const showHeader = !isSigninSignUp(router.route);
 
     return (
         <SessionContext.Provider value={[state, dispatch]}>

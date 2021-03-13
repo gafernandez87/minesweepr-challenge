@@ -9,14 +9,11 @@ import { useState, useContext, useEffect } from 'react';
 import GameThumbnail from 'components/Dashboard/GameThumbnail';
 import NewGame from 'components/Dashboard/NewGame';
 
-// Utils
-import { TYPES } from 'reducers/SessionReducer';
-
 // Styles
 import styles from './dashboard.module.scss';
 
 const Dashboard = () => {
-    const [state, dispatch] = useContext(SessionContext);
+    const [state] = useContext(SessionContext);
     const [games, setGames] = useState([]);
     const router = useRouter();
 
@@ -29,19 +26,11 @@ const Dashboard = () => {
                     flag && setGames(data);
                 });
         }
-        if (state.game) {
-            router.push(`/games/${state.game.id}`);
-        }
         return () => (flag = false);
     }, [state]);
 
     const goToGame = async (gameId) => {
-        const rawGame = await fetch(`/api/players/${state.player.sessionId}/games/${gameId}`);
-        const game = await rawGame.json();
-        dispatch({
-            type: TYPES.SET_GAME,
-            payload: game
-        });
+        router.push(`/games/${gameId}`);
     };
 
     return (

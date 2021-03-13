@@ -30,9 +30,13 @@ export const createGame = async (sessionId, gameConfig) => {
     };
 };
 
-export const saveGame = async (gameId, code) => {
+export const saveGame = async (gameId, code, status) => {
+    const newGame = { code };
+    if (status) {
+        newGame.status = status;
+    }
     try {
-        await gamesRef.doc(gameId).update({ code });
+        await gamesRef.doc(gameId).update(newGame);
         return true;
     } catch (err) {
         return false;

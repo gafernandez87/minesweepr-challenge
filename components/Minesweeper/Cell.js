@@ -28,7 +28,8 @@ const getCellContent = (status, hasMine, bombsAround) => {
 const Cell = ({ coord, status, hasMine, bombsAround, cellClicked }) => {
     const { classes, content } = getCellContent(status, hasMine, bombsAround);
 
-    const handleLeftClick = () => {
+    const handleLeftClick = (e) => {
+        e.preventDefault();
         cellClicked(coord, hasMine, false, bombsAround);
     };
 

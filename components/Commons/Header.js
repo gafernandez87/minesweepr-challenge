@@ -29,8 +29,7 @@ const Header = () => {
     const goToDashboard = () => {
         cookie.remove('minesweeper_current_game');
         dispatch({
-            type: TYPES.SET_GAME,
-            payload: null
+            type: TYPES.CLEAR_GAME
         });
         router.push('/dashboard');
     };

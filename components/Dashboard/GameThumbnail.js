@@ -12,7 +12,7 @@ const GameThumbnail = ({ game, handleClick }) => {
             <div>Starter: 10/10/2020</div>
             <div className={styles.miniGame}
                 style={{ width: ((boardSize.width / 3) + 2), height: ((boardSize.height / 3) + 2) }}>
-                {drawBoard(game.code)}
+                {drawBoard(game.code, () => {})}
             </div>
         </div>
     );

@@ -51,12 +51,15 @@ export function handleRedirect (router, sessionId, isAnonymous) {
         router.push('/games/anonymous');
         return true;
     }
+
     if (sessionId && isSigninSignUp(router.route)) {
+        console.log('GOING TO DASHBOARD');
         router.push('/dashboard');
         return true;
     }
 
-    if (!sessionId && !isSigninSignUp(router.route)) {
+    if (!sessionId) {
+        console.log('GOING TO LOGIN');
         router.push('/login');
         return true;
     }
