@@ -12,7 +12,7 @@ import { SessionContext } from 'contexts/SessionContext';
 import { sessionReducer, TYPES, initialState } from 'reducers/SessionReducer';
 
 // Utils
-import { handleRedirect, loadPlayerBySessionId, isSigninSignUp, loadGameById } from 'utils/utils';
+import { handleRedirect, loadPlayerBySessionId, isSigninSignUp } from 'utils/utils';
 import cookie from 'js-cookie';
 
 // styles
@@ -21,10 +21,23 @@ import 'styles/globals.css';
 function MyApp ({ Component, pageProps }) {
     const [state, dispatch] = useReducer(sessionReducer, initialState);
     const router = useRouter();
-    const sessionId = cookie.get('minesweeper_session_id');
 
     useEffect(() => {
-        const redirected = handleRedirect(router, sessionId);
+        const sessionId = cookie.get('minesweeper_session_id');
+        const isAnonymous = sessionId === 'anonymous';
+
+        if (isAnonymous && !state.player) {
+            dispatch({
+                type: TYPES.SET_PLAYER,
+                payload: {
+                    email: 'anonymous',
+                    sessionId: 'anonymous'
+                }
+            });
+        }
+
+        const redirected = handleRedirect(router, sessionId, isAnonymous);
+
         if (!redirected) {
             if (sessionId && !state.player) {
                 loadPlayerBySessionId(sessionId).then(player => {

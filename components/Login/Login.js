@@ -1,14 +1,22 @@
-import { useContext, useState } from 'react';
+// Next
 import Link from 'next/link';
 
-import { SessionContext } from 'contexts/SessionContext';
+// Hooks
+import { useContext, useState } from 'react';
 
-import styles from './login.module.scss';
+// Context
+import { SessionContext } from 'contexts/SessionContext';
 import { TYPES } from 'reducers/SessionReducer';
 
+// Styles
+import styles from './login.module.scss';
+
+// Utils
+import cookie from 'js-cookie';
+
 const Login = () => {
-    const [email, setEmail] = useState('gastonf87@gmail.com');
-    const [password, setPassword] = useState('test1234');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [_, dispatch] = useContext(SessionContext);
 
     const handleEmailLogin = () => {
@@ -30,6 +38,19 @@ const Login = () => {
                 });
             });
     };
+
+    const handleAnonymousLogin = () => {
+        cookie.set('minesweeper_session_id', 'anonymous');
+        cookie.set('minesweeper_current_game', 'anonymous');
+        dispatch({
+            type: TYPES.SET_PLAYER,
+            payload: {
+                email: 'anonymous',
+                sessionId: 'anonymous'
+            }
+        });
+    };
+
     return (
         <section className={styles.loginContainer}>
             <div className={styles.signUp}>
@@ -47,7 +68,7 @@ const Login = () => {
                 <button onClick={handleEmailLogin}>LOGIN WITH EMAIL</button>
             </div>
             <div className={styles.divider} />
-            <button onClick={handleEmailLogin}>PLAY AS ANONYMOUS</button>
+            <button onClick={handleAnonymousLogin}>PLAY AS ANONYMOUS</button>
         </section>
     );
 };

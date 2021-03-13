@@ -19,15 +19,20 @@ const Dashboard = () => {
     const [state, dispatch] = useContext(SessionContext);
     const [games, setGames] = useState([]);
     const router = useRouter();
+
     useEffect(() => {
+        let flag = true;
         if (state.player && games.length === 0) {
             fetch(`/api/players/${state.player.sessionId}/games`)
                 .then(res => res.json())
-                .then(setGames);
+                .then(data => {
+                    flag && setGames(data);
+                });
         }
         if (state.game) {
             router.push(`/games/${state.game.id}`);
         }
+        return () => (flag = false);
     }, [state]);
 
     const goToGame = async (gameId) => {

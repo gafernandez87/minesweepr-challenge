@@ -37,3 +37,8 @@ export const signup = (email, password) => {
             throw err;
         });
 };
+
+export const anonymous = async () => {
+    const player = await firebase.auth().signInAnonymously();
+    return player.user.uid;
+};

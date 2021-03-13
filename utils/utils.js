@@ -46,9 +46,12 @@ export function isSigninSignUp (route) {
     return route === '/login' || route === '/signup' || route === '/' || route === '/_error';
 }
 
-export function handleRedirect (router, sessionId) {
+export function handleRedirect (router, sessionId, isAnonymous) {
+    if (isAnonymous) {
+        router.push('/games/anonymous');
+        return true;
+    }
     if (sessionId && isSigninSignUp(router.route)) {
-        console.log('redirecting to /dashboard');
         router.push('/dashboard');
         return true;
     }

@@ -1,17 +1,52 @@
-// Styles
+// Hooks
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
+
+// Context
+import { SessionContext } from 'contexts/SessionContext';
+
+// Styles
 import styles from './header.module.scss';
 
-const Header = ({ state }) => {
-    const { player } = state;
+// Utils
+import { TYPES } from 'reducers/SessionReducer';
+import cookie from 'js-cookie';
 
+const Header = () => {
     const router = useRouter();
+    const [state, dispatch] = useContext(SessionContext);
 
+    const signout = () => {
+        cookie.remove('minesweeper_current_game');
+        cookie.remove('minesweeper_session_id');
+
+        dispatch({
+            type: TYPES.SET_PLAYER,
+            payload: null
+        });
+    };
+
+    const goToDashboard = () => {
+        cookie.remove('minesweeper_current_game');
+        dispatch({
+            type: TYPES.SET_GAME,
+            payload: null
+        });
+        router.push('/dashboard');
+    };
+
+    const playerId = state?.player?.sessionId;
     return (
         <div className={styles.header}>
             <img src='/bomb.png' />
-            <span>Welcome {player?.email || 'Anonymous'}</span>
-            <span className={styles.dashboard} onClick={e => router.push('/dashboard')}>Dashboard</span>
+            {playerId && (
+                <>
+                    <span>Welcome {state.player?.email}</span>
+                    {playerId !== 'anonymous' && <span className={styles.dashboard} onClick={goToDashboard}>Dashboard</span>}
+                    <span onClick={signout}>SIGN OUT</span>
+                </>
+            )}
+
         </div>
     );
 };

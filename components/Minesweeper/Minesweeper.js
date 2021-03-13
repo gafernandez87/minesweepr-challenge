@@ -15,8 +15,8 @@ import styles from './minesweeper.module.scss';
 import { GAME_STATUS } from 'utils/utils';
 import { TYPES } from 'reducers/SessionReducer';
 
-const Minesweeper = ({ initialGame }) => {
-    const [game, setGame] = useState(initialGame);
+const Minesweeper = ({ gameId }) => {
+    const [game, setGame] = useState(null);
     const [notification, setNotification] = useState({});
     const [sessionState, dispatch] = useContext(SessionContext);
 
@@ -25,7 +25,25 @@ const Minesweeper = ({ initialGame }) => {
         if (!game?.code && sessionState.game) {
             setGame(sessionState.game);
         }
-    }, [game, sessionState]);
+        if (gameId) {
+            let flag = true;
+            if (sessionState?.player) {
+                const game = sessionState?.game || null;
+                if (game) {
+                    flag && setGame(game);
+                } else {
+                    const sessionId = sessionState?.player?.sessionId;
+
+                    fetch(`/api/players/${sessionId}/games/${gameId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            flag && setGame(data);
+                        });
+                }
+            }
+            return () => (flag = false);
+        }
+    }, [game, sessionState, gameId]);
 
     const checkGameStatus = () => {
         if (game) {
@@ -53,27 +71,33 @@ const Minesweeper = ({ initialGame }) => {
         const code = generateCode(n, m, bombs);
         gameConfig.code = code;
 
-        fetch(`/api/players/${playerId}/games`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(gameConfig)
-        })
-            .then(res => res.json())
-            .then(newGame => {
-                dispatch({
-                    type: TYPES.SET_GAME,
-                    payload: newGame
-                });
-                const bombsObj = mapCodeToObject(code);
-                gameConfig.bombsObj = bombsObj;
-                startGame(gameConfig);
+        if (playerId === 'anonymous') {
+            const bombsObj = mapCodeToObject(code);
+            gameConfig.bombsObj = bombsObj;
+            startGame(gameConfig);
+        } else {
+            fetch(`/api/players/${playerId}/games`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(gameConfig)
             })
-            .catch(err => {
-                console.error(err);
-                showNotification('There was an error trying to start the game, try again!', NOTIFICATION_TYPE.ERROR);
-            });
+                .then(res => res.json())
+                .then(newGame => {
+                    dispatch({
+                        type: TYPES.SET_GAME,
+                        payload: newGame
+                    });
+                    const bombsObj = mapCodeToObject(code);
+                    gameConfig.bombsObj = bombsObj;
+                    startGame(gameConfig);
+                })
+                .catch(err => {
+                    console.error(err);
+                    showNotification('There was an error trying to start the game, try again!', NOTIFICATION_TYPE.ERROR);
+                });
+        }
     };
 
     const saveGame = () => {
@@ -106,7 +130,12 @@ const Minesweeper = ({ initialGame }) => {
                 <Notification message={notification.message} type={notification.type} />
             }
 
-            <GameSetup startGame={createGame} saveGame={saveGame} gameStatus={game?.status} />
+            <GameSetup
+                startGame={createGame}
+                saveGame={saveGame}
+                gameStatus={game?.status}
+                isAnonymous={sessionState?.player?.sessionId === 'anonymous'}
+            />
             {game?.code && <GameBoard game={game} setGame={setGame} />}
 
         </section>

@@ -7,7 +7,7 @@ import { initialGameConfig, DIFFICULTY, GAME_STATUS } from 'utils/utils';
 // Styles
 import styles from './minesweeper.module.scss';
 
-const GameSetup = ({ startGame, saveGame, gameStatus }) => {
+const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous }) => {
     const [gameConfig, setGameConfig] = useState(initialGameConfig);
     const [difficulty, setDifficulty] = useState(initialGameConfig.difficulty);
 
@@ -62,7 +62,7 @@ const GameSetup = ({ startGame, saveGame, gameStatus }) => {
             )}
 
             <button onClick={() => startGame(gameConfig)}>Start new game!</button>
-            {gameStatus && gameStatus === GAME_STATUS.PLAYING && <button onClick={saveGame}>Save</button>}
+            {!isAnonymous && gameStatus && gameStatus === GAME_STATUS.PLAYING && <button onClick={saveGame}>Save</button>}
         </div>
     );
 };
