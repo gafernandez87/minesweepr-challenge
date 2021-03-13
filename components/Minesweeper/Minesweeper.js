@@ -21,6 +21,7 @@ const Minesweeper = ({ gameId }) => {
     const [sessionState, dispatch] = useContext(SessionContext);
 
     useEffect(() => {
+        console.log('EFFECT');
         checkGameStatus();
         if (!game?.code && sessionState.game) {
             setGame(sessionState.game);
@@ -33,12 +34,13 @@ const Minesweeper = ({ gameId }) => {
                     flag && setGame(game);
                 } else {
                     const sessionId = sessionState?.player?.sessionId;
-
-                    fetch(`/api/players/${sessionId}/games/${gameId}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            flag && setGame(data);
-                        });
+                    if (sessionId !== 'anonymous') {
+                        fetch(`/api/players/${sessionId}/games/${gameId}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                flag && setGame(data);
+                            });
+                    }
                 }
             }
             return () => (flag = false);
