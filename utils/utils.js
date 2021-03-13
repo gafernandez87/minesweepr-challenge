@@ -2,8 +2,8 @@ export const CELL_SIZE = 60;
 export const BOARD_DEFAULT_SIZE = 4;
 
 export const GAME_STATUS = {
-    PLAYING: 'playing',
-    WIN: 'win',
+    PLAYING: 'PLAYING',
+    WIN: 'WIN',
     GAME_OVER: 'GAME_OVER'
 };
 

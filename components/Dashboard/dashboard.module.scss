@@ -22,6 +22,12 @@
         flex-flow: wrap column;
         border: 1px solid black;
         justify-content: space-around;
+        &.WIN {
+            background-color: green;
+        }
+        &.GAME_OVER {
+            background-color: red;
+        }
     }
     .newGameThumbnailContainer {
         width: 300px;
@@ -49,6 +55,7 @@
         font-size: 10px !important;
         cursor: inherit !important;
         line-height: 20px !important;
+        background-color: white;
         img {
             width: 15px;
             height: 15px;

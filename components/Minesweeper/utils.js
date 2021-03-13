@@ -3,6 +3,7 @@ import Cell from 'components/Minesweeper/Cell';
 
 // Utils
 import { BOMB_STATUS, CELL_STATUS, CELL_SIZE } from 'utils/utils';
+import moment from 'moment';
 
 export const generateCode = (n, m, bombs) => {
     let code = '';
@@ -136,4 +137,8 @@ export const getUpdatedCode = (code, coord, bombsObj, hasMine, isRightClick) => 
         }
     }
     return code;
+};
+
+export const formatDate = (date) => {
+    return moment(date).calendar();
 };

@@ -15,6 +15,9 @@ import styles from './minesweeper.module.scss';
 import { GAME_STATUS } from 'utils/utils';
 import { TYPES } from 'reducers/SessionReducer';
 
+// Utils
+import moment from 'moment';
+
 const Minesweeper = ({ gameId }) => {
     const [notification, setNotification] = useState({});
     const [sessionState, dispatch] = useContext(SessionContext);
@@ -43,23 +46,33 @@ const Minesweeper = ({ gameId }) => {
 
     const checkGameStatus = () => {
         const status = sessionState.game?.status;
+        const playerId = sessionState.player?.sessionId;
+
+        const message = status === GAME_STATUS.WIN ? 'YOU WIN!' : 'GAME OVER!';
+        const type = status === GAME_STATUS.WIN ? NOTIFICATION_TYPE.SUCCESS : NOTIFICATION_TYPE.ERROR;
+
         // Only save if the game change from playing to another state
-        if (status && initialGameStatus &&
-            (status === GAME_STATUS.WIN || status === GAME_STATUS.GAME_OVER) &&
-            status !== initialGameStatus) {
-            saveGame(status)
-                .then(_ => {
-                    const message = status === GAME_STATUS.WIN ? 'YOU WIN!' : 'GAME OVER!';
-                    const type = status === GAME_STATUS.WIN ? NOTIFICATION_TYPE.SUCCESS : NOTIFICATION_TYPE.ERROR;
-                    showNotification(message, type);
-                })
-                .catch(err => {
-                    console.error(err);
-                });
+        if (status && status !== initialGameStatus &&
+            (status === GAME_STATUS.WIN || status === GAME_STATUS.GAME_OVER)) {
+            if (playerId === 'anonymous') {
+                showNotification(message, type);
+            } else {
+                saveGame(status)
+                    .then(_ => {
+                        const message = status === GAME_STATUS.WIN ? 'YOU WIN!' : 'GAME OVER!';
+                        const type = status === GAME_STATUS.WIN ? NOTIFICATION_TYPE.SUCCESS : NOTIFICATION_TYPE.ERROR;
+                        showNotification(message, type);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            }
         }
     };
 
     const startGame = (gameConfig) => {
+        setNotification({});
+
         delete gameConfig.bombsObj;
         dispatch({
             type: TYPES.SET_GAME,
@@ -68,27 +81,29 @@ const Minesweeper = ({ gameId }) => {
                 status: GAME_STATUS.PLAYING
             }
         });
-        setNotification({});
     };
 
     const createGame = (gameConfig) => {
         const playerId = sessionState.player.sessionId;
         const { n, m, bombs } = gameConfig;
+        const now = moment().format();
 
         const code = generateCode(n, m, bombs);
+        const bombsObj = mapCodeToObject(code);
         gameConfig.code = code;
+        gameConfig.bombsObj = bombsObj;
 
         if (playerId === 'anonymous') {
-            const bombsObj = mapCodeToObject(code);
-            gameConfig.bombsObj = bombsObj;
             startGame(gameConfig);
         } else {
+            const saveObject = { ...gameConfig, startedDate: now, lastUpdate: now };
+            delete saveObject.bombsObj;
             fetch(`/api/players/${playerId}/games`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(gameConfig)
+                body: JSON.stringify(saveObject)
             })
                 .then(res => res.json())
                 .then(newGame => {
@@ -96,8 +111,6 @@ const Minesweeper = ({ gameId }) => {
                         type: TYPES.SET_GAME,
                         payload: newGame
                     });
-                    const bombsObj = mapCodeToObject(code);
-                    gameConfig.bombsObj = bombsObj;
                     startGame(gameConfig);
                 })
                 .catch(err => {
@@ -110,11 +123,13 @@ const Minesweeper = ({ gameId }) => {
     const saveGame = (status) => {
         const playerId = sessionState.player.sessionId;
         const gameId = sessionState.game.id;
+        const lastUpdate = moment().format();
         return fetch(`/api/players/${playerId}/games/${gameId}`, {
             method: 'PATCH',
             body: JSON.stringify({
                 code: sessionState.game.code,
-                status
+                status,
+                lastUpdate
             }),
             headers: {
                 'Content-Type': 'application/json'
