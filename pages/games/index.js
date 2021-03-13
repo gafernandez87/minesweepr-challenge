@@ -5,7 +5,7 @@ import Head from 'next/head';
 import Minesweeper from 'components/Minesweeper/Minesweeper';
 
 // Styles
-import styles from 'styles/Home.module.css';
+import styles from 'components/Commons/home.module.scss';
 
 export default function newGamePage () {
     return (

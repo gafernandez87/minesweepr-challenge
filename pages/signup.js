@@ -5,7 +5,7 @@ import Head from 'next/head';
 import Signup from 'components/Signup/Signup';
 
 // Styles
-import styles from 'Home.module.css';
+import styles from 'components/Commons/home.module.scss';
 
 export default function SignupPage () {
     return (
