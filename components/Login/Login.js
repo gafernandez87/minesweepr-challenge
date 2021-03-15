@@ -27,10 +27,10 @@ const Login = () => {
         setNotification({
             message,
             type,
-            visible: true
+            visible: message !== ''
         });
         if (hide) {
-            setTimeout(() => showNotification('', '', false), hide);
+            setTimeout(() => showNotification('', ''), hide);
         }
     };
 

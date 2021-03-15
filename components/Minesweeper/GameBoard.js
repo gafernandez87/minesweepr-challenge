@@ -1,5 +1,5 @@
 // Hooks
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 // Context
 import { SessionContext } from 'contexts/SessionContext';
@@ -14,14 +14,19 @@ import { TYPES } from 'reducers/SessionReducer';
 
 const GameBoard = () => {
     const [state, dispatch] = useContext(SessionContext);
-    const { n, m, bombs, code } = state.game;
-    const boardSize = getBoardSize(n, m, bombs);
+    const { n, m, bombs, code, bombsObj } = state.game;
+    const boardSize = getBoardSize(n, m);
 
     const handleCellClick = (coord, hasMine, isRightClick) => {
         if (state.game?.status === GAME_STATUS.PLAYING) {
             const bombsObj = state.game.bombsObj || mapCodeToObject(state.game.code);
             const updatedCode = getUpdatedCode(code, coord, bombsObj, hasMine, isRightClick);
             const updatedBombsObj = mapCodeToObject(updatedCode);
+            const flagged = Object.values(updatedBombsObj).filter(s => s.status === CELL_STATUS.FLAGGED).length;
+            console.log({ bombs, flagged, count: (bombs - flagged) });
+            if (isRightClick && (bombs - flagged < 0)) {
+                return;
+            }
             const uncovered = Object.values(updatedBombsObj)
                 .filter(s => s.status === CELL_STATUS.FLAGGED || s.status === CELL_STATUS.COVERED).length;
 
@@ -36,15 +41,20 @@ const GameBoard = () => {
                 type: TYPES.SET_GAME,
                 payload: {
                     code: updatedCode,
+                    bombsObj: updatedBombsObj,
                     status: gameStatus
                 }
             });
         }
     };
 
+    const flagged = Object.values(bombsObj).filter(s => s.status === CELL_STATUS.FLAGGED).length;
     return (
-        <div style={{ width: boardSize.width, height: boardSize.height }} className={styles.minesweeper}>
-            {drawBoard(code, handleCellClick, bombs)}
+        <div>
+            <h3>Bombs remaining: {bombs - flagged}</h3>
+            <div style={{ width: boardSize.width, height: boardSize.height }} className={styles.minesweeper}>
+                {drawBoard(code, handleCellClick, n, m)}
+            </div>
         </div>
     );
 };

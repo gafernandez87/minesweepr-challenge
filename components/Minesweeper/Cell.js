@@ -1,11 +1,11 @@
 import styles from './minesweeper.module.scss';
 import { CELL_STATUS } from 'utils/utils';
 
-const getCellContent = (status, hasMine, bombsAround, bombs) => {
+const getCellContent = (status, hasMine, bombsAround, n, m) => {
     let content = '';
     const classes = [styles.cell];
 
-    if (bombs >= 30) {
+    if (n >= 30 || m >= 30) {
         classes.push(styles.smallBoard);
     }
 
@@ -29,8 +29,8 @@ const getCellContent = (status, hasMine, bombsAround, bombs) => {
     };
 };
 
-const Cell = ({ coord, status, hasMine, bombsAround, cellClicked, bombs }) => {
-    const { classes, content } = getCellContent(status, hasMine, bombsAround, bombs);
+const Cell = ({ coord, status, hasMine, bombsAround, cellClicked, n, m }) => {
+    const { classes, content } = getCellContent(status, hasMine, bombsAround, n, m);
 
     const handleLeftClick = (e) => {
         e.preventDefault();

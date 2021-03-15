@@ -17,7 +17,7 @@ export const DIFFICULTY = {
 export const initialGameConfig = {
     n: BOARD_DEFAULT_SIZE,
     m: BOARD_DEFAULT_SIZE,
-    bombs: 1,
+    bombs: 2,
     difficulty: DIFFICULTY.EASY
 };
 

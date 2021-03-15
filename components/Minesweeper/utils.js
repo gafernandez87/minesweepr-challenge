@@ -5,26 +5,34 @@ import Cell from 'components/Minesweeper/Cell';
 import { BOMB_STATUS, CELL_STATUS, CELL_SIZE, DIFFICULTY, GAME_STATUS } from 'utils/utils';
 import moment from 'moment';
 
-export const generateCode = (n, m, bombs) => {
+export const generateCode = (n, m, bombs, cheat) => {
     let code = '';
-    let mineCount = 0;
+    const defaultStatus = cheat ? CELL_STATUS.UNCOVERED : CELL_STATUS.COVERED;
     for (let i = 0; i < n; i++) {
         for (let j = 0; j < m; j++) {
-            let mine = getRandomMine();
-            if (mine === BOMB_STATUS.ACTIVE) {
-                mine = getRandomMine();
-                if (mineCount < bombs && mine === BOMB_STATUS.ACTIVE) {
-                    mineCount++;
-                } else {
-                    mine = BOMB_STATUS.INACTIVE;
-                }
-            }
-            code += `${i}-${j}|${CELL_STATUS.COVERED}|${mine}_`;
+            code += `${i}-${j}|${defaultStatus}|${BOMB_STATUS.INACTIVE}_`;
         }
+    }
+
+    let mineCount = 0;
+    const bombsObj = mapCodeToObject(code);
+    while (mineCount < bombs) {
+        const r1 = getRandom(0, n);
+        const r2 = getRandom(0, m);
+        const key = `${r1}-${r2}`;
+        const cell = bombsObj[key];
+        if (!cell || cell.hasMine) continue;
+        code = code.replace(`${key}|${defaultStatus}|${BOMB_STATUS.INACTIVE}`, `${key}|${defaultStatus}|${BOMB_STATUS.ACTIVE}`);
+        cell.hasMine = true;
+        mineCount++;
     }
 
     // Remove the last _
     return code.substr(0, code.length - 1);
+};
+
+const getRandom = (max, min) => {
+    return Math.floor(Math.random() * (max - min) + min);
 };
 
 export const getRandomMine = () => {
@@ -49,7 +57,7 @@ export const mapCodeToObject = (code) => {
     return newObj;
 };
 
-export const drawBoard = (code, handleCellClick, bombs) => {
+export const drawBoard = (code, handleCellClick, n, m) => {
     const cells = code.split('_');
     return cells.map(cell => {
         const cellDetails = cell.split('|');
@@ -64,7 +72,8 @@ export const drawBoard = (code, handleCellClick, bombs) => {
             status={cellStatus}
             bombsAround={bombsAround}
             hasMine={hasMine === BOMB_STATUS.ACTIVE}
-            bombs={bombs}
+            n={n}
+            m={m}
             cellClicked={handleCellClick}
         />;
     });
@@ -92,9 +101,10 @@ export const countBombsAround = (code, coord, newBombsObj) => {
 export const getBoardSize = (n, m, bombs) => {
     const boardWidth = m * CELL_SIZE;
     const boardHeight = n * CELL_SIZE;
+    const isBigBoard = n >= 30 || m >= 30;
     return {
-        width: bombs >= 30 ? boardWidth / 3 : boardWidth,
-        height: bombs >= 30 ? boardHeight / 3 : boardHeight
+        width: isBigBoard ? boardWidth / 3 : boardWidth,
+        height: isBigBoard ? boardHeight / 3 : boardHeight
     };
 };
 
@@ -141,7 +151,7 @@ export const getUpdatedCode = (code, coord, bombsObj, hasMine, isRightClick) => 
 };
 
 export const formatDate = (date) => {
-    return moment(date).calendar();
+    return moment(date).format('MM-DD-YYYY hh:mm');
 };
 export const calculateTime = (start, end) => {
     const startMoment = moment(start);

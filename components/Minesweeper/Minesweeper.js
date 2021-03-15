@@ -17,11 +17,14 @@ import { TYPES } from 'reducers/SessionReducer';
 
 // Utils
 import moment from 'moment';
+import cookie from 'js-cookie';
 
 const Minesweeper = ({ gameId }) => {
     const [notification, setNotification] = useState({ visible: false });
     const [sessionState, dispatch] = useContext(SessionContext);
     const [initialGameStatus, setInitialGame] = useState(null);
+
+    const cheat = cookie.get('cheat');
 
     useEffect(() => {
         let flag = true;
@@ -71,7 +74,7 @@ const Minesweeper = ({ gameId }) => {
     };
 
     const startGame = (gameConfig) => {
-        setNotification({});
+        setNotification('', '');
 
         dispatch({
             type: TYPES.SET_GAME,
@@ -87,7 +90,7 @@ const Minesweeper = ({ gameId }) => {
         const { n, m, bombs } = gameConfig;
         const now = moment().format();
 
-        const code = generateCode(n, m, bombs);
+        const code = generateCode(n, m, bombs, cheat);
         const bombsObj = mapCodeToObject(code);
         gameConfig.code = code;
         gameConfig.bombsObj = bombsObj;
@@ -141,7 +144,7 @@ const Minesweeper = ({ gameId }) => {
             .then(_ => showNotification('Game saved!', NOTIFICATION_TYPE.SUCCESS, 3000))
             .catch(err => {
                 console.error(err);
-                showNotification('Game save failed, try again!', NOTIFICATION_TYPE.ERROR);
+                showNotification('Game save failed, try again!', NOTIFICATION_TYPE.ERROR, 4000);
             });
     };
 
@@ -149,10 +152,10 @@ const Minesweeper = ({ gameId }) => {
         setNotification({
             message,
             type,
-            visible: true
+            visible: message !== ''
         });
         if (hide) {
-            setTimeout(() => showNotification({ visible: false }), hide);
+            setTimeout(() => showNotification('', ''), hide);
         }
     };
 

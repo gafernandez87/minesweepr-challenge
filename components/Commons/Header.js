@@ -35,15 +35,16 @@ const Header = () => {
     };
 
     const playerId = state?.player?.sessionId;
+    const isAnonymous = playerId && playerId === 'anonymous';
     return (
         <div className={styles.header}>
             {playerId && (
                 <>
                     <span>Welcome {state.player?.email}</span>
-                    {playerId !== 'anonymous' && (
+                    {!isAnonymous && (
                         <span className={styles.dashboard} onClick={goToDashboard}>Dashboard</span>
                     )}
-                    <span className={styles.logout} onClick={signout}>SIGN OUT</span>
+                    <span className={styles.logout} onClick={signout}>{isAnonymous ? 'EXIT' : 'SIGN OUT'}</span>
                 </>
             )}
 

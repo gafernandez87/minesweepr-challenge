@@ -20,14 +20,14 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous, showNotificat
             setGameConfig({
                 n: 5,
                 m: 5,
-                bombs: 7,
+                bombs: 5,
                 difficulty: DIFFICULTY.NORMAL
             });
         } else if (currentDifficulty === DIFFICULTY.HARD) {
             setGameConfig({
                 n: 8,
                 m: 8,
-                bombs: 20,
+                bombs: 15,
                 difficulty: DIFFICULTY.HARD
             });
         } else if (currentDifficulty === DIFFICULTY.CUSTOM) {
