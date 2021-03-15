@@ -99,7 +99,6 @@ const Minesweeper = ({ gameId }) => {
             startGame(gameConfig);
         } else {
             const saveObject = { ...gameConfig, startedDate: now, lastUpdate: now };
-            delete saveObject.bombsObj;
             fetch(`/api/players/${playerId}/games`, {
                 method: 'POST',
                 headers: {
