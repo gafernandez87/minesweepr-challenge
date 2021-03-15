@@ -143,6 +143,12 @@ export const getUpdatedCode = (code, coord, bombsObj, hasMine, isRightClick) => 
 export const formatDate = (date) => {
     return moment(date).calendar();
 };
+export const calculateTime = (start, end) => {
+    const startMoment = moment(start);
+    const endMoment = moment(end);
+    const duration = moment.duration(endMoment.diff(startMoment)).asMinutes();
+    return parseInt(duration);
+};
 
 export const mapDifficulty = difficulty => {
     switch (difficulty) {

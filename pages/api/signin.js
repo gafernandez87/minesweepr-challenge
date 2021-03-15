@@ -9,13 +9,12 @@ export default async (req, res) => {
             const player = await signin(email, password);
             res.setHeader('Set-Cookie', `minesweeper_session_id=${player.sessionId}; path=/`);
             res.status(200).json(player);
+            return;
         } catch (error) {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error(`${errorCode} - ${errorMessage}`);
-            res.status(500).json('Player not found');
+            res.status(500).json({ error: error.message });
+            return;
         };
     } else {
-        res.status(405).json('METHOD NOT ALLOWED');
+        res.status(405).json({ error: 'METHOD NOT ALLOWED' });
     }
 };

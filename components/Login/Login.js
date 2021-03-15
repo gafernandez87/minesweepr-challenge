@@ -4,6 +4,9 @@ import Link from 'next/link';
 // Hooks
 import { useContext, useState } from 'react';
 
+// Components
+import { Notification, NOTIFICATION_TYPE } from 'components/Commons/Notification';
+
 // Context
 import { SessionContext } from 'contexts/SessionContext';
 import { TYPES } from 'reducers/SessionReducer';
@@ -17,7 +20,19 @@ import cookie from 'js-cookie';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [notification, setNotification] = useState({});
     const [_, dispatch] = useContext(SessionContext);
+
+    const showNotification = (message, type, hide) => {
+        setNotification({
+            message,
+            type,
+            visible: true
+        });
+        if (hide) {
+            setTimeout(() => showNotification('', '', false), hide);
+        }
+    };
 
     const handleEmailLogin = () => {
         fetch('/api/signin', {
@@ -32,10 +47,14 @@ const Login = () => {
         })
             .then(res => res.json())
             .then(player => {
+                if (player.error) throw new Error(player.error);
                 dispatch({
                     type: TYPES.SET_PLAYER,
                     payload: player
                 });
+            })
+            .catch(err => {
+                showNotification(err.message, NOTIFICATION_TYPE.ERROR, 3000);
             });
     };
 
@@ -53,6 +72,7 @@ const Login = () => {
 
     return (
         <section className={styles.loginContainer}>
+            <Notification message={notification.message} type={notification.type} visible={notification.visible}/>
             <div className={styles.signUp}>
                 <Link href="/signup"><a>SIGN UP</a></Link>
             </div>

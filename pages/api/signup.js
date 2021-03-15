@@ -10,7 +10,7 @@ export default async (req, res) => {
         try {
             newUser = await signup(email, password);
         } catch (error) {
-            res.status(500).json({ error: 'The email address is already in use by another account' });
+            res.status(500).json({ error: error.message });
             return;
         }
 
@@ -19,6 +19,7 @@ export default async (req, res) => {
 
             res.setHeader('Set-Cookie', `minesweeper_session_id=${newPlayer.sessionId}; path=/`);
             res.status(200).json(newPlayer);
+            return;
         } catch (error) {
             const errorCode = error.code;
             const errorMessage = error.message;

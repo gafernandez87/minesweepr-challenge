@@ -19,7 +19,7 @@ import { TYPES } from 'reducers/SessionReducer';
 import moment from 'moment';
 
 const Minesweeper = ({ gameId }) => {
-    const [notification, setNotification] = useState({});
+    const [notification, setNotification] = useState({ visible: false });
     const [sessionState, dispatch] = useContext(SessionContext);
     const [initialGameStatus, setInitialGame] = useState(null);
 
@@ -148,24 +148,24 @@ const Minesweeper = ({ gameId }) => {
     const showNotification = (message, type, hide) => {
         setNotification({
             message,
-            type
+            type,
+            visible: true
         });
         if (hide) {
-            setTimeout(() => showNotification(null), hide);
+            setTimeout(() => showNotification({ visible: false }), hide);
         }
     };
 
     return (
         <section className={styles.gameArea}>
-            {notification.message &&
-                <Notification message={notification.message} type={notification.type} />
-            }
+            <Notification message={notification.message} type={notification.type} visible={notification.visible}/>
 
             <GameSetup
                 startGame={createGame}
                 saveGame={handleSaveGame}
                 gameStatus={sessionState.game?.status}
                 isAnonymous={sessionState?.player?.sessionId === 'anonymous'}
+                showNotification={showNotification}
             />
             {sessionState.game?.code && <GameBoard />}
 

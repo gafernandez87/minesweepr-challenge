@@ -13,29 +13,41 @@ const config = {
 
 export const db = firebase.firestore();
 
+const firebaseAuthWrap = async (promise) => {
+    const rejected = Symbol('rejected');
+    const valueOrError = await promise.catch((error) => {
+        return { [rejected]: true, error: error };
+    });
+
+    if (valueOrError[rejected]) {
+        throw valueOrError.error;
+    } else {
+        return valueOrError;
+    }
+};
+
 export const signin = async (email, password) => {
     try {
-        const data = await firebase.auth().signInWithEmailAndPassword(email, password);
+        const data = await firebaseAuthWrap(firebase.auth().signInWithEmailAndPassword(email, password));
         return {
             sessionId: data.user.uid,
             email
         };
     } catch (err) {
-        throw new Error(err);
+        throw Error(err);
     }
 };
 
-export const signup = (email, password) => {
-    return firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((data) => {
-            return {
-                sessionId: data.user.uid,
-                email
-            };
-        })
-        .catch(err => {
-            throw err;
-        });
+export const signup = async (email, password) => {
+    try {
+        const data = await firebaseAuthWrap(firebase.auth().createUserWithEmailAndPassword(email, password));
+        return {
+            sessionId: data.user.uid,
+            email
+        };
+    } catch (err) {
+        throw Error(err);
+    }
 };
 
 export const anonymous = async () => {

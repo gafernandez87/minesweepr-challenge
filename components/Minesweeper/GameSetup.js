@@ -1,4 +1,5 @@
 // Hooks
+import { NOTIFICATION_TYPE } from 'components/Commons/Notification';
 import { useState } from 'react';
 
 // Utils
@@ -7,7 +8,7 @@ import { initialGameConfig, DIFFICULTY, GAME_STATUS } from 'utils/utils';
 // Styles
 import styles from './minesweeper.module.scss';
 
-const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous }) => {
+const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous, showNotification }) => {
     const [gameConfig, setGameConfig] = useState(initialGameConfig);
     const [difficulty, setDifficulty] = useState(initialGameConfig.difficulty);
 
@@ -38,6 +39,37 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous }) => {
         setDifficulty(currentDifficulty);
     };
 
+    const changeN = e => {
+        const value = parseInt(e.target.value) || 0;
+        if (value > 40) {
+            showNotification('Board size max is 40x40', NOTIFICATION_TYPE.WARN, 3000);
+            return gameConfig.n;
+        } else {
+            setGameConfig({ ...gameConfig, n: value });
+        }
+    };
+
+    const changeM = e => {
+        const value = parseInt(e.target.value) || 0;
+        if (value > 40) {
+            showNotification('Board size max is 40x40', NOTIFICATION_TYPE.WARN, 3000);
+            return gameConfig.m;
+        } else {
+            setGameConfig({ ...gameConfig, m: value });
+        }
+    };
+
+    const changeBombs = e => {
+        const value = parseInt(e.target.value) || 0;
+        const maxBombsAllowed = parseInt((gameConfig.n * gameConfig.m) / 2);
+        if (value > maxBombsAllowed) {
+            showNotification(`Max bombs allowed: ${maxBombsAllowed}`, NOTIFICATION_TYPE.WARN, 3000);
+            return gameConfig.bombs;
+        } else {
+            setGameConfig({ ...gameConfig, bombs: value });
+        }
+    };
+
     return (
         <div className={styles.setup}>
             <div className={styles.difficulty}>
@@ -56,7 +88,7 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous }) => {
                         <input type="text"
                             value={gameConfig.n}
                             placeholder="N"
-                            onChange={e => setGameConfig({ ...gameConfig, n: parseInt(e.target.value) })}
+                            onChange={changeN}
                         />
                     </div>
                     <div>
@@ -64,7 +96,7 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous }) => {
                         <input type="text"
                             value={gameConfig.m}
                             placeholder="M"
-                            onChange={e => setGameConfig({ ...gameConfig, m: parseInt(e.target.value) })}
+                            onChange={changeM}
                         />
                     </div>
                     <div>
@@ -72,7 +104,7 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous }) => {
                         <input type="text"
                             value={gameConfig.bombs}
                             placeholder="5"
-                            onChange={e => setGameConfig({ ...gameConfig, bombs: parseInt(e.target.value) })}
+                            onChange={changeBombs}
                         />
                     </div>
                 </div>

@@ -30,8 +30,8 @@ export const createGame = async (sessionId, gameConfig) => {
     };
 };
 
-export const saveGame = async (gameId, code, status) => {
-    const newGame = { code };
+export const saveGame = async (gameId, code, status, lastUpdate) => {
+    const newGame = { code, lastUpdate };
     if (status) {
         newGame.status = status;
     }

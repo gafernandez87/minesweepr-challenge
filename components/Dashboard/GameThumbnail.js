@@ -1,14 +1,15 @@
 // Utils
-import { formatDate, mapDifficulty, mapStatus } from 'components/Minesweeper/utils';
+import { formatDate, calculateTime, mapDifficulty, mapStatus } from 'components/Minesweeper/utils';
 
 // Components
 import MiniGame from './MiniGame';
 
 // Styles
 import styles from './dashboard.module.scss';
+import { GAME_STATUS } from 'utils/utils';
 
 const GameThumbnail = ({ game, handleClick }) => {
-    const { status, startedDate, difficulty, n, m } = game;
+    const { status, startedDate, lastUpdate, difficulty, n, m } = game;
 
     const containerClasses = [styles.gameThumbnailContainer, styles.card];
     const ribbonClasses = [styles.ribbon, styles.ribbonTopRight].join(' ');
@@ -25,6 +26,7 @@ const GameThumbnail = ({ game, handleClick }) => {
                 <span><b>Size:</b> {n}x{m}</span>
                 <span><b>Difficulty:</b> {mapDifficulty(difficulty)}</span>
                 <span><b>Started:</b> {formatDate(startedDate)}</span>
+                {status === GAME_STATUS.GAME_OVER && <span><b>Time spent:</b> {calculateTime(startedDate, lastUpdate)} minutes</span>}
             </div>
         </div>
     );

@@ -6,7 +6,7 @@ export const NOTIFICATION_TYPE = {
     ERROR: 'error'
 };
 
-export const Notification = ({ message, type }) => {
+export const Notification = ({ message, type, visible }) => {
     const classes = [styles.notification, styles[type]].join(' ');
-    return (<div className={classes}>{message}</div>);
+    return (visible ? <div className={classes}>{message}</div> : null);
 };
