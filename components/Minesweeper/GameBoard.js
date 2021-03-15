@@ -23,7 +23,6 @@ const GameBoard = () => {
             const updatedCode = getUpdatedCode(code, coord, bombsObj, hasMine, isRightClick);
             const updatedBombsObj = mapCodeToObject(updatedCode);
             const flagged = Object.values(updatedBombsObj).filter(s => s.status === CELL_STATUS.FLAGGED).length;
-            console.log({ bombs, flagged, count: (bombs - flagged) });
             if (isRightClick && (bombs - flagged < 0)) {
                 return;
             }
