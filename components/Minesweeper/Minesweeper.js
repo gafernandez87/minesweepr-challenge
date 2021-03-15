@@ -21,13 +21,13 @@ import moment from 'moment';
 const Minesweeper = ({ gameId }) => {
     const [notification, setNotification] = useState({});
     const [sessionState, dispatch] = useContext(SessionContext);
-    const [initialGameStatus, setI] = useState(null);
+    const [initialGameStatus, setInitialGame] = useState(null);
 
     useEffect(() => {
-        checkGameStatus();
+        let flag = true;
+        checkGameStatus(flag);
 
         const sessionId = sessionState?.player?.sessionId;
-        let flag = true;
         if (gameId && !sessionState.game) {
             if (sessionId && sessionId !== 'anonymous') {
                 fetch(`/api/players/${sessionId}/games/${gameId}`)
@@ -37,14 +37,14 @@ const Minesweeper = ({ gameId }) => {
                             type: TYPES.SET_GAME,
                             payload: newGame
                         });
-                        flag && setI(newGame.status);
+                        flag && setInitialGame(newGame.status);
                     });
             }
         }
         return () => (flag = false);
     }, [sessionState, gameId]);
 
-    const checkGameStatus = () => {
+    const checkGameStatus = (flag) => {
         const status = sessionState.game?.status;
         const playerId = sessionState.player?.sessionId;
 
@@ -55,13 +55,13 @@ const Minesweeper = ({ gameId }) => {
         if (status && status !== initialGameStatus &&
             (status === GAME_STATUS.WIN || status === GAME_STATUS.GAME_OVER)) {
             if (playerId === 'anonymous') {
-                showNotification(message, type);
+                flag && showNotification(message, type);
             } else {
                 saveGame(status)
                     .then(_ => {
                         const message = status === GAME_STATUS.WIN ? 'YOU WIN!' : 'GAME OVER!';
                         const type = status === GAME_STATUS.WIN ? NOTIFICATION_TYPE.SUCCESS : NOTIFICATION_TYPE.ERROR;
-                        showNotification(message, type);
+                        flag && showNotification(message, type);
                     })
                     .catch(err => {
                         console.error(err);
@@ -73,7 +73,6 @@ const Minesweeper = ({ gameId }) => {
     const startGame = (gameConfig) => {
         setNotification({});
 
-        delete gameConfig.bombsObj;
         dispatch({
             type: TYPES.SET_GAME,
             payload: {

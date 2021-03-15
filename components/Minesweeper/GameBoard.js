@@ -15,7 +15,7 @@ import { TYPES } from 'reducers/SessionReducer';
 const GameBoard = () => {
     const [state, dispatch] = useContext(SessionContext);
     const { n, m, bombs, code } = state.game;
-    const boardSize = getBoardSize(n, m);
+    const boardSize = getBoardSize(n, m, bombs);
 
     const handleCellClick = (coord, hasMine, isRightClick) => {
         if (state.game?.status === GAME_STATUS.PLAYING) {
@@ -44,7 +44,7 @@ const GameBoard = () => {
 
     return (
         <div style={{ width: boardSize.width, height: boardSize.height }} className={styles.minesweeper}>
-            {drawBoard(code, handleCellClick)}
+            {drawBoard(code, handleCellClick, bombs)}
         </div>
     );
 };

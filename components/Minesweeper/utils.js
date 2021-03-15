@@ -2,7 +2,7 @@
 import Cell from 'components/Minesweeper/Cell';
 
 // Utils
-import { BOMB_STATUS, CELL_STATUS, CELL_SIZE } from 'utils/utils';
+import { BOMB_STATUS, CELL_STATUS, CELL_SIZE, DIFFICULTY, GAME_STATUS } from 'utils/utils';
 import moment from 'moment';
 
 export const generateCode = (n, m, bombs) => {
@@ -49,7 +49,7 @@ export const mapCodeToObject = (code) => {
     return newObj;
 };
 
-export const drawBoard = (code, handleCellClick) => {
+export const drawBoard = (code, handleCellClick, bombs) => {
     const cells = code.split('_');
     return cells.map(cell => {
         const cellDetails = cell.split('|');
@@ -64,6 +64,7 @@ export const drawBoard = (code, handleCellClick) => {
             status={cellStatus}
             bombsAround={bombsAround}
             hasMine={hasMine === BOMB_STATUS.ACTIVE}
+            bombs={bombs}
             cellClicked={handleCellClick}
         />;
     });
@@ -88,12 +89,12 @@ export const countBombsAround = (code, coord, newBombsObj) => {
     return bombs;
 };
 
-export const getBoardSize = (n, m) => {
+export const getBoardSize = (n, m, bombs) => {
     const boardWidth = m * CELL_SIZE;
     const boardHeight = n * CELL_SIZE;
     return {
-        width: boardWidth,
-        height: boardHeight
+        width: bombs >= 30 ? boardWidth / 3 : boardWidth,
+        height: bombs >= 30 ? boardHeight / 3 : boardHeight
     };
 };
 
@@ -141,4 +142,28 @@ export const getUpdatedCode = (code, coord, bombsObj, hasMine, isRightClick) => 
 
 export const formatDate = (date) => {
     return moment(date).calendar();
+};
+
+export const mapDifficulty = difficulty => {
+    switch (difficulty) {
+    case DIFFICULTY.EASY:
+        return 'Easy';
+    case DIFFICULTY.NORMAL:
+        return 'Normal';
+    case DIFFICULTY.HARD:
+        return 'Hard';
+    default:
+        return 'Custom';
+    }
+};
+
+export const mapStatus = status => {
+    switch (status) {
+    case GAME_STATUS.WIN:
+        return 'won';
+    case GAME_STATUS.GAME_OVER:
+        return 'LOSE';
+    default:
+        return 'Playing';
+    }
 };

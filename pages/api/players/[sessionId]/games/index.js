@@ -6,6 +6,7 @@ export default async (req, res) => {
     if (method === 'GET') {
         try {
             const games = await getGamesByFilter('sessionId', OPERATORS.EQUALS, sessionId);
+            games.sort((a, b) => a.difficulty < b.difficulty ? 1 : -1);
             res.status(200).json(games);
             return;
         } catch (error) {

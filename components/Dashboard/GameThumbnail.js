@@ -1,28 +1,31 @@
 // Utils
-import { drawBoard, getBoardSize, formatDate } from 'components/Minesweeper/utils';
-import { GAME_STATUS } from 'utils/utils';
+import { formatDate, mapDifficulty, mapStatus } from 'components/Minesweeper/utils';
+
+// Components
+import MiniGame from './MiniGame';
 
 // Styles
 import styles from './dashboard.module.scss';
 
 const GameThumbnail = ({ game, handleClick }) => {
-    const boardSize = getBoardSize(game.n, game.m);
-    const { status, code, startedDate } = game;
-    const containerClasses = [styles.gameThumbnailContainer];
+    const { status, startedDate, difficulty, n, m } = game;
 
-    if (status === GAME_STATUS.GAME_OVER || status === GAME_STATUS.WIN) {
-        containerClasses.push(styles[status]);
-    }
+    const containerClasses = [styles.gameThumbnailContainer, styles.card];
+    const ribbonClasses = [styles.ribbon, styles.ribbonTopRight].join(' ');
     return (
         <div
             className={containerClasses.join(' ')}
             onClick={() => handleClick(game.id)}
         >
-            <div className={styles.miniGame}
-                style={{ width: ((boardSize.width / 3) + 2), height: ((boardSize.height / 3) + 2) }}>
-                {drawBoard(code, () => {})}
+            <MiniGame game={game}/>
+            <div className={styles.gameOverview}>
+                <div className={ribbonClasses}>
+                    <span className={styles[status]}>{mapStatus(status)}</span>
+                </div>
+                <span><b>Size:</b> {n}x{m}</span>
+                <span><b>Difficulty:</b> {mapDifficulty(difficulty)}</span>
+                <span><b>Started:</b> {formatDate(startedDate)}</span>
             </div>
-            <div>Started: {formatDate(startedDate)}</div>
         </div>
     );
 };

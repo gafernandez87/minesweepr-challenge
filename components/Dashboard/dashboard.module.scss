@@ -1,46 +1,47 @@
+@import '../../styles/color.module.scss';
+
 .gameList {
     width: 100%;
-    padding: 30px;;
+    margin: 2% 5% 0% 5%;
     display: flex;
     flex-flow: wrap row;
     justify-content: flex-start;
 }
 
+.card {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    background-color: $white;
+    -webkit-box-shadow: $box-shadow;
+    -moz-box-shadow: $box-shadow;
+    box-shadow: $box-shadow;
+}
 .gamesContainer {
     padding: 2%;
     display: flex;
     flex-flow: wrap row;
+    text-align: center;
 
     .gameThumbnailContainer {
-        width: 300px;
-        height: 300px;
-        display: flex;
         padding: 20px;
+        display: flex;
+        cursor: pointer;
         margin-right: 5%;
-        text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 5%;
         flex-flow: wrap column;
-        border: 1px solid black;
         justify-content: space-around;
-        &.WIN {
-            background-color: green;
-        }
-        &.GAME_OVER {
-            background-color: red;
-        }
     }
     .newGameThumbnailContainer {
-        width: 300px;
-        height: 300px;
         cursor: pointer;
-        font-size: 50px;
+        font-size: 30px;
         margin-right: 5%;
         font-weight: bold;
         text-align: center;
-        margin-bottom: 20px;
         line-height: 300px;
+        color: $soft-green;
+        margin-bottom: 20px;
         vertical-align: middle;
-        border: 1px solid black;
     }
 }
 
@@ -49,17 +50,90 @@
     flex-flow: wrap row;
     margin: 0 auto;
     border: 1px solid black;
+    &.customGame {
+        border: none;
+    }
     div {
         height: 20px;
         width: 20px;
         font-size: 10px !important;
-        cursor: inherit !important;
         line-height: 20px !important;
-        background-color: white;
         img {
             width: 15px;
             height: 15px;
             margin-top: 2px;
         }
     }
+}
+
+.gameOverview {
+    display: flex;
+    flex-flow: wrap column;
+    justify-content: flex-start;
+    text-align: left;
+    min-height: 90px;
+    b {
+        color: $soft-green;
+    }
+    span {
+        margin-bottom: 1%;
+    }
+}
+
+.ribbon {
+    width: 125px;
+    height: 125px;
+    overflow: hidden;
+    position: absolute;
+  }
+  .ribbon::before,
+  .ribbon::after {
+    position: absolute;
+    content: '';
+    display: block;
+    border: 5px solid $dark-blue;
+  }
+  .ribbon span {
+    position: absolute;
+    display: block;
+    width: 200px;
+    padding: 10px 0;
+    box-shadow: 0 5px 10px rgba(0,0,0,.1);
+    color: #fff;
+    font: 700 18px/1 'Lato', sans-serif;
+    text-shadow: 0 1px 1px rgba(0,0,0,.2);
+    text-transform: uppercase;
+    text-align: center;
+    &.GAME_OVER{
+        background-color: $dark-red;
+    }
+    &.WIN{
+        background-color: $soft-green;
+    }
+    &.PLAYING{
+        background-color: $blue;
+    }
+}
+
+.ribbonTopRight {
+    top: -10px;
+    right: -10px;
+}
+.ribbonTopRight::before,
+.ribbonTopRight::after {
+    border-top-color: transparent;
+    border-right-color: transparent;
+}
+.ribbonTopRight::before {
+    top: 0;
+    left: 0;
+}
+.ribbonTopRight::after {
+    bottom: 0;
+    right: 0;
+}
+.ribbonTopRight span {
+    left: -25px;
+    top: 30px;
+    transform: rotate(45deg);
 }

@@ -8,10 +8,10 @@ export const GAME_STATUS = {
 };
 
 export const DIFFICULTY = {
-    EASY: 'easy',
-    NORMAL: 'normal',
-    HARD: 'hard',
-    CUSTOM: 'custom'
+    EASY: 1,
+    NORMAL: 2,
+    HARD: 3,
+    CUSTOM: 0
 };
 
 export const initialGameConfig = {

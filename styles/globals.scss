@@ -1,9 +1,13 @@
+@import './color.module.scss';
+
 html,
 body {
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    background-color: $gray;
+    color: $dark-blue;
 }
 
 a {
@@ -26,4 +30,11 @@ input, select {
 button {
   height: 35px;
   width: 100%;
+  border-radius: 5px;
+  color: #fff5f5;
+  font-weight: bold;
+  font-size: 15px;
+  text-transform: uppercase;
+  background-color: $soft-green;
+  border: 1px solid black;
 }

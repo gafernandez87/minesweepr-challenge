@@ -1,11 +1,15 @@
+@import '../../styles/color.module.scss';
+
 .loginContainer {
     width: 400px;
     height: 400px;
     padding: 30px;
     display: flex;
     flex-flow: wrap column;
-    justify-content: space-between;
+    box-shadow: $box-shadow;
+    background-color: white;
     border: 1px solid black;
+    justify-content: space-between;
     
     .emailLogin{
         height: 60%;
@@ -19,11 +23,13 @@
     .divider {
         height: 2px;
         width: 100%;
-        border: 1px dashed black;
+        border: 1px solid black;
     }
 
     .signUp {
+        font-size: 15px;
         text-align: right;
-        font-size: 13px;
+        font-weight: bold;
+        color: $soft-green;
     }
 }

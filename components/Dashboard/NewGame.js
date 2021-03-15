@@ -1,12 +1,29 @@
 import styles from './dashboard.module.scss';
 
-import Link from 'next/link';
+import { useContext } from 'react';
+import { SessionContext } from 'contexts/SessionContext';
+import { useRouter } from 'next/router';
+import { TYPES } from 'reducers/SessionReducer';
+import cookie from 'js-cookie';
 
 const NewGame = () => {
+    const [state, dispatch] = useContext(SessionContext);
+    const router = useRouter();
+
+    const goToNewGame = () => {
+        cookie.remove('minesweeper_current_game');
+        router.push('/games');
+        dispatch({
+            type: TYPES.CLEAR_GAME
+        });
+    };
+
     return (
-        <Link href='/games'>
-            <a className={styles.newGameThumbnailContainer}>+</a>
-        </Link>
+        <span
+            className={[styles.newGameThumbnailContainer, styles.card].join(' ')}
+            onClick={goToNewGame}>
+                NEW GAME
+        </span>
     );
 };
 

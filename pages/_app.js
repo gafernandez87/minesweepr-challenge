@@ -16,7 +16,7 @@ import { handleRedirect, loadPlayerBySessionId, isSigninSignUp } from 'utils/uti
 import cookie from 'js-cookie';
 
 // styles
-import 'styles/globals.css';
+import 'styles/globals.scss';
 
 function MyApp ({ Component, pageProps }) {
     const [state, dispatch] = useReducer(sessionReducer, initialState);

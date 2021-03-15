@@ -1,14 +1,18 @@
 import styles from './minesweeper.module.scss';
 import { CELL_STATUS } from 'utils/utils';
 
-const getCellContent = (status, hasMine, bombsAround) => {
+const getCellContent = (status, hasMine, bombsAround, bombs) => {
     let content = '';
     const classes = [styles.cell];
+
+    if (bombs >= 30) {
+        classes.push(styles.smallBoard);
+    }
 
     switch (status) {
     case CELL_STATUS.UNCOVERED: {
         classes.push(styles.uncovered);
-        content = hasMine ? <img className={styles.icon} src='/bomb.png'/> : bombsAround;
+        content = hasMine ? <img className={styles.icon} src='/bomb.png'/> : bombsAround > 0 ? bombsAround : '';
         break;
     }
     case CELL_STATUS.FLAGGED: {
@@ -25,8 +29,8 @@ const getCellContent = (status, hasMine, bombsAround) => {
     };
 };
 
-const Cell = ({ coord, status, hasMine, bombsAround, cellClicked }) => {
-    const { classes, content } = getCellContent(status, hasMine, bombsAround);
+const Cell = ({ coord, status, hasMine, bombsAround, cellClicked, bombs }) => {
+    const { classes, content } = getCellContent(status, hasMine, bombsAround, bombs);
 
     const handleLeftClick = (e) => {
         e.preventDefault();

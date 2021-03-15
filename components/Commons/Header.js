@@ -37,12 +37,13 @@ const Header = () => {
     const playerId = state?.player?.sessionId;
     return (
         <div className={styles.header}>
-            <img src='/bomb.png' />
             {playerId && (
                 <>
                     <span>Welcome {state.player?.email}</span>
-                    {playerId !== 'anonymous' && <span className={styles.dashboard} onClick={goToDashboard}>Dashboard</span>}
-                    <span onClick={signout}>SIGN OUT</span>
+                    {playerId !== 'anonymous' && (
+                        <span className={styles.dashboard} onClick={goToDashboard}>Dashboard</span>
+                    )}
+                    <span className={styles.logout} onClick={signout}>SIGN OUT</span>
                 </>
             )}
 

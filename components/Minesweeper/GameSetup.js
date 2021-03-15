@@ -12,7 +12,7 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous }) => {
     const [difficulty, setDifficulty] = useState(initialGameConfig.difficulty);
 
     const changeDifficulty = (e) => {
-        const currentDifficulty = e.target.value;
+        const currentDifficulty = parseInt(e.target.value);
         if (currentDifficulty === DIFFICULTY.EASY) {
             setGameConfig(initialGameConfig);
         } else if (currentDifficulty === DIFFICULTY.NORMAL) {
@@ -28,6 +28,11 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous }) => {
                 m: 8,
                 bombs: 20,
                 difficulty: DIFFICULTY.HARD
+            });
+        } else if (currentDifficulty === DIFFICULTY.CUSTOM) {
+            setGameConfig({
+                ...gameConfig,
+                difficulty: DIFFICULTY.CUSTOM
             });
         }
         setDifficulty(currentDifficulty);
@@ -48,15 +53,27 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous }) => {
                 <div className={styles.customGame}>
                     <div>
                         <label>Height</label>
-                        <input type="text" value={gameConfig.n} placeholder="N" onChange={e => setGameConfig({ ...gameConfig, n: e.target.value })}/>
+                        <input type="text"
+                            value={gameConfig.n}
+                            placeholder="N"
+                            onChange={e => setGameConfig({ ...gameConfig, n: parseInt(e.target.value) })}
+                        />
                     </div>
                     <div>
                         <label>Width</label>
-                        <input type="text" value={gameConfig.m} placeholder="M" onChange={e => setGameConfig({ ...gameConfig, m: e.target.value })}/>
+                        <input type="text"
+                            value={gameConfig.m}
+                            placeholder="M"
+                            onChange={e => setGameConfig({ ...gameConfig, m: parseInt(e.target.value) })}
+                        />
                     </div>
                     <div>
                         <label>Bombs</label>
-                        <input type="text" value={gameConfig.bombs} placeholder="5" onChange={e => setGameConfig({ ...gameConfig, bombs: e.target.value })}/>
+                        <input type="text"
+                            value={gameConfig.bombs}
+                            placeholder="5"
+                            onChange={e => setGameConfig({ ...gameConfig, bombs: parseInt(e.target.value) })}
+                        />
                     </div>
                 </div>
             )}

@@ -13,8 +13,8 @@ import NewGame from 'components/Dashboard/NewGame';
 import styles from './dashboard.module.scss';
 
 const Dashboard = () => {
-    const [state] = useContext(SessionContext);
     const [games, setGames] = useState([]);
+    const [state] = useContext(SessionContext);
     const router = useRouter();
 
     useEffect(() => {
