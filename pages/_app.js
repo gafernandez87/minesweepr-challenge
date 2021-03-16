@@ -1,3 +1,6 @@
+// NextJS
+import Head from 'next/head';
+
 // Components
 import Header from 'components/Commons/Header';
 
@@ -54,6 +57,9 @@ function MyApp ({ Component, pageProps }) {
 
     return (
         <SessionContext.Provider value={[state, dispatch]}>
+            <Head>
+                <link rel="icon" href="/bomb.png" />
+            </Head>
             {showHeader && <Header state={state} />}
             <Component {...pageProps} />
         </SessionContext.Provider>

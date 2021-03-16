@@ -17,7 +17,6 @@ export default function GameId () {
         <div className={styles.inGameContainer}>
             <Head>
                 <title>Minesweeper | Game</title>
-                {/* <link rel="icon" href="/favicon.ico" />  TODO ICON */}
             </Head>
             <Minesweeper gameId={gameId}/>
 

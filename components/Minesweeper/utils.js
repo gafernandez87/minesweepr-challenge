@@ -101,7 +101,7 @@ export const countBombsAround = (code, coord, newBombsObj) => {
 export const getBoardSize = (n, m, bombs) => {
     const boardWidth = m * CELL_SIZE;
     const boardHeight = n * CELL_SIZE;
-    const isBigBoard = n >= 30 || m >= 30;
+    const isBigBoard = n >= 15 || m >= 15;
     return {
         width: isBigBoard ? boardWidth / 3 : boardWidth,
         height: isBigBoard ? boardHeight / 3 : boardHeight
@@ -156,8 +156,12 @@ export const formatDate = (date) => {
 export const calculateTime = (start, end) => {
     const startMoment = moment(start);
     const endMoment = moment(end);
-    const duration = moment.duration(endMoment.diff(startMoment)).asMinutes();
-    return parseInt(duration);
+    let duration = parseInt(moment.duration(endMoment.diff(startMoment)).asMinutes());
+    if (duration !== 0) {
+        return `${duration} minutes`;
+    }
+    duration = parseInt(moment.duration(endMoment.diff(startMoment)).asSeconds());
+    return `${duration} seconds`;
 };
 
 export const mapDifficulty = difficulty => {
@@ -176,10 +180,10 @@ export const mapDifficulty = difficulty => {
 export const mapStatus = status => {
     switch (status) {
     case GAME_STATUS.WIN:
-        return 'won';
+        return 'WON';
     case GAME_STATUS.GAME_OVER:
         return 'LOSE';
     default:
-        return 'Playing';
+        return 'PLAYING';
     }
 };

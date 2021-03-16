@@ -1,5 +1,5 @@
 // Hooks
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 // Context
 import { SessionContext } from 'contexts/SessionContext';
@@ -23,14 +23,14 @@ const GameBoard = () => {
             const updatedCode = getUpdatedCode(code, coord, bombsObj, hasMine, isRightClick);
             const updatedBombsObj = mapCodeToObject(updatedCode);
             const flagged = Object.values(updatedBombsObj).filter(s => s.status === CELL_STATUS.FLAGGED).length;
+
             if (isRightClick && (bombs - flagged < 0)) {
                 return;
             }
-            const uncovered = Object.values(updatedBombsObj)
-                .filter(s => s.status === CELL_STATUS.FLAGGED || s.status === CELL_STATUS.COVERED).length;
+            const covered = Object.values(updatedBombsObj).filter(s => s.status === CELL_STATUS.COVERED).length;
 
             let gameStatus = state.game.status;
-            if (uncovered === bombs && !hasMine) {
+            if (flagged === bombs && covered === 0 && (isRightClick || !hasMine)) {
                 gameStatus = GAME_STATUS.WIN;
             } else if (!isRightClick && hasMine) {
                 gameStatus = GAME_STATUS.GAME_OVER;

@@ -12,10 +12,8 @@ export default function SignupPage () {
         <div className={styles.container}>
             <Head>
                 <title>Minesweeper | Signup</title>
-                {/* <link rel="icon" href="/favicon.ico" />  TODO ICON */}
             </Head>
             <Signup />
-
         </div>
     );
 };

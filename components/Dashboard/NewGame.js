@@ -1,13 +1,19 @@
-import styles from './dashboard.module.scss';
-
+// Hooks
 import { useContext } from 'react';
-import { SessionContext } from 'contexts/SessionContext';
 import { useRouter } from 'next/router';
+
+// Context
+import { SessionContext } from 'contexts/SessionContext';
+
+// Utils
 import { TYPES } from 'reducers/SessionReducer';
 import cookie from 'js-cookie';
 
+// styles
+import styles from './dashboard.module.scss';
+
 const NewGame = () => {
-    const [state, dispatch] = useContext(SessionContext);
+    const [_, dispatch] = useContext(SessionContext);
     const router = useRouter();
 
     const goToNewGame = () => {

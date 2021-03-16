@@ -1,3 +1,4 @@
+// styles
 import styles from './notification.module.scss';
 
 export const NOTIFICATION_TYPE = {

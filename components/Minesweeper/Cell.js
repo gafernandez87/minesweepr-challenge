@@ -5,7 +5,7 @@ const getCellContent = (status, hasMine, bombsAround, n, m) => {
     let content = '';
     const classes = [styles.cell];
 
-    if (n >= 30 || m >= 30) {
+    if (n >= 15 || m >= 15) {
         classes.push(styles.smallBoard);
     }
 

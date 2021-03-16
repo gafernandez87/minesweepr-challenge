@@ -26,7 +26,7 @@ const GameThumbnail = ({ game, handleClick }) => {
                 <span><b>Size:</b> {n}x{m}</span>
                 <span><b>Difficulty:</b> {mapDifficulty(difficulty)}</span>
                 <span><b>Started:</b> {formatDate(startedDate)}</span>
-                {status === GAME_STATUS.GAME_OVER && <span><b>Time spent:</b> {calculateTime(startedDate, lastUpdate)} minutes</span>}
+                {status !== GAME_STATUS.PLAYING && <span><b>Time spent:</b> {calculateTime(startedDate, lastUpdate)}</span>}
             </div>
         </div>
     );

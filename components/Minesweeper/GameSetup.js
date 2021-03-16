@@ -41,7 +41,7 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous, showNotificat
 
     const changeN = e => {
         const value = parseInt(e.target.value) || 0;
-        if (value > 40) {
+        if (value > 25) {
             showNotification('Board size max is 40x40', NOTIFICATION_TYPE.WARN, 3000);
             return gameConfig.n;
         } else {
@@ -51,8 +51,8 @@ const GameSetup = ({ startGame, saveGame, gameStatus, isAnonymous, showNotificat
 
     const changeM = e => {
         const value = parseInt(e.target.value) || 0;
-        if (value > 40) {
-            showNotification('Board size max is 40x40', NOTIFICATION_TYPE.WARN, 3000);
+        if (value > 25) {
+            showNotification('Board size max is 25x25', NOTIFICATION_TYPE.WARN, 3000);
             return gameConfig.m;
         } else {
             setGameConfig({ ...gameConfig, m: value });

@@ -12,10 +12,8 @@ export default function LoginPage () {
         <div className={styles.container}>
             <Head>
                 <title>Minesweeper | Login</title>
-                {/* <link rel="icon" href="/favicon.ico" />  TODO ICON */}
             </Head>
             <Login />
-
         </div>
     );
 }
